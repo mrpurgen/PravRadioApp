@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PravRadioApp</string>
+    <string name="view_page_audioarchive">Аудиоархив</string>
+    <string name="view_page_downloaded">Загружено</string>
+</resources>
