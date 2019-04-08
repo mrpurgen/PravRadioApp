@@ -6,7 +6,13 @@ import eugenzh.ru.pravradioapp.Common.RequestResult;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 
 public interface DateViewSubject {
-    void subscrip(DateViewObserver observer);
-    void unsubscrip(DateViewObserver observer);
-    <T extends Item> void notifyObserver(RequestResult result, List<T> list);
+
+    void subscripEventUpdateView(DateViewObserver observer);
+    void unsubscripEventUpdateView(DateViewObserver observer);
+
+    void subscripEventUpdateSelectedItem(SelectedItemObserver observer);
+    void unsubscripEventUpdateSelectedItem(SelectedItemObserver observer);
+
+    <T extends Item> void notifyObserversDateView(RequestResult result, List<T> list);
+    void notifyObserversSelectedItem(long id);
 }

@@ -1,13 +1,18 @@
 package eugenzh.ru.pravradioapp.View.FragmentList;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -27,10 +32,14 @@ import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenter;
 import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenterFactory;
 import eugenzh.ru.pravradioapp.R;
 
-public class FragmentList extends MvpAppCompatFragment implements ItemView {
+public class FragmentList extends MvpAppCompatFragment implements ItemView, SwipeRefreshLayout.OnRefreshListener {
 
     TypeItems typeItem;
     TypeSourceItems typeSourceITems;
+    private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefresh;
+    RecyclerView recyclerView;
+    FragmentListAdapter recyclerAdapter;
 
     @InjectPresenter
     ItemViewPresenter presenter;
@@ -40,10 +49,15 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView {
         return ItemViewPresenterFactory.getPresenter(typeItem);
     }
 
-    RecyclerView recyclerView;
-    FragmentListAdapter recyclerAdapter;
+    public static FragmentList newInstance(TypeItems typeItem){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("TYPE_ITEM", typeItem);
 
+        FragmentList fragmentList = new FragmentList();
+        fragmentList.setArguments(bundle);
 
+        return fragmentList;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,19 +73,24 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.recyclerview_divider);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(drawable);
 
+        recyclerView = view.findViewById(R.id.recycler_list);
+        progressBar = view.findViewById(R.id.progress_bar_status_load_item);
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_list);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerAdapter = new FragmentListAdapter();
         recyclerView.setAdapter(recyclerAdapter);
         recyclerAdapter.notifyDataSetChanged();
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        swipeRefresh.setOnRefreshListener(this);
+        swipeRefresh.setColorSchemeResources(R.color.colorRedMaterial);
 
         return view;
-    }
-
-    @Override
-    public void onClick(long duration) {
-
     }
 
     @Override
@@ -80,11 +99,31 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView {
         recyclerAdapter.notifyDataSetChanged();
     }
 
-    class FragmentListCategoryHolder extends RecyclerView.ViewHolder{
+    @Override
+    public void showWaitLoad() {
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideWaitLoad() {
+        progressBar.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefresh.setRefreshing(false);
+        presenter.updateContent();
+    }
+
+    class FragmentListCategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView categoryTitle;
 
          FragmentListCategoryHolder(LayoutInflater inflater, ViewGroup parent){
             super(inflater.inflate(R.layout.category_list_item, parent, false));
+
+            itemView.setOnClickListener(this);
 
             categoryTitle = itemView.findViewById(R.id.category_name);
         }
@@ -92,14 +131,21 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView {
         void setCategoryTitle(String title){
             categoryTitle.setText(title);
         }
+
+        @Override
+        public void onClick(View view) {
+             presenter.onClick(getLayoutPosition());
+        }
     }
 
-     class FragmentListPodcastHolder extends RecyclerView.ViewHolder{
+     class FragmentListPodcastHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView podcastTitle;
         TextView podcastDate;
 
          FragmentListPodcastHolder(LayoutInflater inflater, ViewGroup parent){
             super(inflater.inflate(R.layout.podcast_list_item, parent, false));
+
+             itemView.setOnClickListener(this);
 
             podcastDate = itemView.findViewById(R.id.podcast_date);
             podcastTitle = itemView.findViewById(R.id.podcast_title);
@@ -112,7 +158,12 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView {
          void setPodcastDate(String date){
             podcastDate.setText(date);
         }
-    }
+
+         @Override
+         public void onClick(View view) {
+             presenter.onClick(getLayoutPosition());
+         }
+     }
 
      class FragmentListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 

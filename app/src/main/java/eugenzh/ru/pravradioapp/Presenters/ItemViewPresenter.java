@@ -7,6 +7,6 @@ import eugenzh.ru.pravradioapp.View.FragmentList.ItemView;
 
 
 abstract public class ItemViewPresenter extends MvpPresenter<ItemView> {
-    abstract public void onClick();
+    abstract public void onClick(int position);
     abstract public void updateContent();
 }

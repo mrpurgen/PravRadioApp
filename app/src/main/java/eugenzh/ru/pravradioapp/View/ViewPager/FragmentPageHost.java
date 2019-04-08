@@ -10,21 +10,56 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.PresenterType;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+
 import java.lang.reflect.Type;
 
 import eugenzh.ru.pravradioapp.Common.TypeItems;
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+import eugenzh.ru.pravradioapp.Models.DataView.CategoriesServerSinglton;
+import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
+import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
+import eugenzh.ru.pravradioapp.Models.DataView.Observer.SelectedItemObserver;
+import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenter;
+import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenterFactory;
 import eugenzh.ru.pravradioapp.R;
 import eugenzh.ru.pravradioapp.View.FragmentList.FragmentList;
 
-public class FragmentPageHost  extends Fragment {
+
+public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedItemObserver {
+    TypeSourceItems resourseType;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle bundle = getArguments();
+        resourseType = (TypeSourceItems) bundle.getSerializable("RESOURSE_TYPE");
+
+        if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
+            DateViewSubject subject = CategoriesServerSinglton.getInstance();
+            subject.subscripEventUpdateSelectedItem(this);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
+            DateViewSubject subject = CategoriesServerSinglton.getInstance();
+            subject.unsubscripEventUpdateSelectedItem(this);
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        TypeSourceItems resourseType = (TypeSourceItems) bundle.getSerializable("RESOURSE_TYPE");
-
         Fragment fragment = new FragmentList();
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -50,5 +85,20 @@ public class FragmentPageHost  extends Fragment {
         }
 
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void update(long selectedItemdID) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("TYPE_ITEM", TypeItems.TYPE_ITEM_PODCAST);
+
+        Fragment fragment = new FragmentList();
+        fragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.view_page_server, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

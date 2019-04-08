@@ -14,18 +14,17 @@ import eugenzh.ru.pravradioapp.Models.Item.Item;
 
 @InjectViewState
 public class CategoryViewPresenter extends ItemViewPresenter implements DateViewObserver {
-
+    DateViewSubject subject = CategoriesServerSinglton.getInstance();
+    DateViewCategory repository = CategoriesServerSinglton.getInstance();
 
     public CategoryViewPresenter(){
-        DateViewSubject subject = CategoriesServerSinglton.getInstance();
-        subject.subscrip(this);
+        subject.subscripEventUpdateView(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DateViewSubject subject = CategoriesServerSinglton.getInstance();
-        subject.unsubscrip(this);
+        subject.unsubscripEventUpdateView(this);
     }
 
     @Override
@@ -35,19 +34,20 @@ public class CategoryViewPresenter extends ItemViewPresenter implements DateView
     }
 
     @Override
-    public void onClick() {
-
+    public void onClick(int position) {
+        repository.setSelectedItem(position);
     }
 
     @Override
     public void updateContent() {
-        DateViewCategory repository = CategoriesServerSinglton.getInstance();
+        getViewState().showWaitLoad();
         repository.update();
     }
 
     @Override
     public <T extends Item> void update(RequestResult result, List<T> list) {
         if (result == RequestResult.REQUEST_RESUTL_SUCC){
+            getViewState().hideWaitLoad();
             getViewState().updateList((List<Item>)list);
         }
     }
