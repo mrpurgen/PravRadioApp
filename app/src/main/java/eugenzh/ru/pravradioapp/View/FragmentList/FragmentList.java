@@ -46,12 +46,13 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView, Swip
 
     @ProvidePresenter
     ItemViewPresenter providePresenter(){
-        return ItemViewPresenterFactory.getPresenter(typeItem);
+        return ItemViewPresenterFactory.getPresenter(typeItem, typeSourceITems);
     }
 
-    public static FragmentList newInstance(TypeItems typeItem){
+    public static FragmentList newInstance(TypeItems typeItem, TypeSourceItems typeSource){
         Bundle bundle = new Bundle();
         bundle.putSerializable("TYPE_ITEM", typeItem);
+        bundle.putSerializable("RESOURSE_TYPE", typeSource);
 
         FragmentList fragmentList = new FragmentList();
         fragmentList.setArguments(bundle);

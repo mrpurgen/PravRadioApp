@@ -7,7 +7,6 @@ import eugenzh.ru.pravradioapp.Models.Repository.Repository;
 import eugenzh.ru.pravradioapp.Models.Repository.ServerRepository;
 
 public class PodcastsServerSinglton extends DateViewPodcast{
-    Repository repository = new ServerRepository();
     private static final PodcastsServerSinglton ourInstance = new PodcastsServerSinglton();
 
     public static PodcastsServerSinglton getInstance() {

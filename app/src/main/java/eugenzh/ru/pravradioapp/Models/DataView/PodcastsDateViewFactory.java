@@ -3,7 +3,7 @@ package eugenzh.ru.pravradioapp.Models.DataView;
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
 
 public class PodcastsDateViewFactory {
-    static DateViewPodcast getPodcasts(TypeSourceItems typeSource){
+    public static DateViewPodcast getPodcasts(TypeSourceItems typeSource){
         if (typeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
             return PodcastsMemorySinglton.getInstance();
         }

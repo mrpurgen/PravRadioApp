@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 
 import eugenzh.ru.pravradioapp.Common.TypeItems;
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+import eugenzh.ru.pravradioapp.Models.DataView.CategoriesDateViewFactory;
 import eugenzh.ru.pravradioapp.Models.DataView.CategoriesServerSinglton;
 import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
 import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
@@ -40,20 +41,16 @@ public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedI
         Bundle bundle = getArguments();
         resourseType = (TypeSourceItems) bundle.getSerializable("RESOURSE_TYPE");
 
-        if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
-            DateViewSubject subject = CategoriesServerSinglton.getInstance();
-            subject.subscripEventUpdateSelectedItem(this);
-        }
+        DateViewSubject subject = CategoriesDateViewFactory.getCategories(resourseType);
+        subject.subscripEventUpdateSelectedItem(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
-            DateViewSubject subject = CategoriesServerSinglton.getInstance();
-            subject.unsubscripEventUpdateSelectedItem(this);
-        }
+        DateViewSubject subject = CategoriesDateViewFactory.getCategories(resourseType);
+        subject.unsubscripEventUpdateSelectedItem(this);
     }
 
     @Nullable
@@ -65,12 +62,12 @@ public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedI
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        bundle.putSerializable("TYPE_ITEM", TypeItems.TYPE_ITEM_CATEGORY);
+
         if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
-            bundle.putSerializable("TYPE_ITEM", TypeItems.TYPE_ITEM_PODCAST);
             fragmentTransaction.replace(R.id.view_page_memory, fragment);
         }
         else if(resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
-            bundle.putSerializable("TYPE_ITEM", TypeItems.TYPE_ITEM_CATEGORY);
             fragmentTransaction.replace(R.id.view_page_server, fragment);
         }
 
@@ -89,15 +86,22 @@ public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedI
 
     @Override
     public void update(long selectedItemdID) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("TYPE_ITEM", TypeItems.TYPE_ITEM_PODCAST);
+        Fragment fragment = FragmentList.newInstance(TypeItems.TYPE_ITEM_PODCAST, resourseType);
+        int viewID = 0;
 
-        Fragment fragment = new FragmentList();
-        fragment.setArguments(bundle);
+        if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
+            viewID = R.id.view_page_server;
+        }
+        else if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
+            viewID = R.id.view_page_memory;
+        }
+        else{
+            viewID = R.id.view_page_server;
+        }
 
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.view_page_server, fragment)
+                .replace(viewID, fragment)
                 .addToBackStack(null)
                 .commit();
     }

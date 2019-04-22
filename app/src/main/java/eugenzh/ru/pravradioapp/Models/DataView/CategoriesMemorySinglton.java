@@ -1,21 +1,25 @@
 package eugenzh.ru.pravradioapp.Models.DataView;
 
-
 import eugenzh.ru.pravradioapp.Models.Repository.MemoryRepository;
 import eugenzh.ru.pravradioapp.Models.Repository.Repository;
 
-public class PodcastsMemorySinglton extends DateViewPodcast{
-    private static final PodcastsMemorySinglton ourInstance = new PodcastsMemorySinglton();
+public class CategoriesMemorySinglton extends DateViewCategory{
+    private static final CategoriesMemorySinglton ourInstance = new CategoriesMemorySinglton();
 
-    public static PodcastsMemorySinglton getInstance() {
+    public static CategoriesMemorySinglton getInstance() {
         return ourInstance;
     }
 
-    private PodcastsMemorySinglton() {
+    private CategoriesMemorySinglton() {
     }
 
     @Override
     Repository createRepositoryLoader() {
         return new MemoryRepository();
+    }
+
+    @Override
+    public void update() {
+
     }
 }

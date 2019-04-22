@@ -4,6 +4,7 @@ import java.util.List;
 
 import eugenzh.ru.pravradioapp.Models.HttpConnection.BuildHttpConnection;
 import eugenzh.ru.pravradioapp.Models.HttpConnection.CategoryHttpAPI;
+import eugenzh.ru.pravradioapp.Models.HttpConnection.PodcastHttpAPI;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;
@@ -27,7 +28,8 @@ public class ServerRepository implements Repository{
 
     @Override
     public void requestPodcasts(long categoryId, HandlerRequestItems handler) {
-
+        PodcastHttpAPI podcastAPI = connection.getRetrofit().create(PodcastHttpAPI.class);
+        loader(podcastAPI.getPodcastAll(categoryId), handler);
     }
 
     private <T extends Item> void loader(Call<List<T>> list, final HandlerRequestItems handler) {

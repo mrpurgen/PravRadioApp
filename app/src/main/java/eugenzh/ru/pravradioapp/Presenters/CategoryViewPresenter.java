@@ -6,6 +6,8 @@ import com.arellomobile.mvp.InjectViewState;
 import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.RequestResult;
+import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+import eugenzh.ru.pravradioapp.Models.DataView.CategoriesDateViewFactory;
 import eugenzh.ru.pravradioapp.Models.DataView.CategoriesServerSinglton;
 import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
 import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewObserver;
@@ -14,23 +16,27 @@ import eugenzh.ru.pravradioapp.Models.Item.Item;
 
 @InjectViewState
 public class CategoryViewPresenter extends ItemViewPresenter implements DateViewObserver {
-    DateViewSubject subject = CategoriesServerSinglton.getInstance();
-    DateViewCategory repository = CategoriesServerSinglton.getInstance();
+    DateViewSubject subject;
+    DateViewCategory repository;
 
-    public CategoryViewPresenter(){
+    public CategoryViewPresenter(TypeSourceItems type){
+        super(type);
+
+        subject = CategoriesDateViewFactory.getCategories(typeSourceItems);
+        repository = CategoriesDateViewFactory.getCategories(typeSourceItems);
         subject.subscripEventUpdateView(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        subject.unsubscripEventUpdateView(this);
     }
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
         updateContent();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        subject.unsubscripEventUpdateView(this);
     }
 
     @Override
