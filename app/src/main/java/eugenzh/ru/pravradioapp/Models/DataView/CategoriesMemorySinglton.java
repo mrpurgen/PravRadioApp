@@ -17,9 +17,4 @@ public class CategoriesMemorySinglton extends DateViewCategory{
     Repository createRepositoryLoader() {
         return new MemoryRepository();
     }
-
-    @Override
-    public void update() {
-
-    }
 }

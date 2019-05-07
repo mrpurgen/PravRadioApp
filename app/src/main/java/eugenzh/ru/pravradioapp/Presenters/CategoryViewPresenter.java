@@ -1,6 +1,11 @@
 package eugenzh.ru.pravradioapp.Presenters;
 
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.view.View;
+
 import com.arellomobile.mvp.InjectViewState;
 
 import java.util.List;
@@ -51,10 +56,33 @@ public class CategoryViewPresenter extends ItemViewPresenter implements DateView
     }
 
     @Override
-    public <T extends Item> void update(RequestResult result, List<T> list) {
-        if (result == RequestResult.REQUEST_RESUTL_SUCC){
-            getViewState().hideWaitLoad();
-            getViewState().updateList((List<Item>)list);
+    public void onLongClick(View view, int position) {
+
+    }
+
+    @Override
+    public void handlerResultRequestPermissionWriteStorage(Context context, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE_CODE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getViewState().showWaitLoad();
+                repository.update();
+            }
+            else{
+                getViewState().showFailRequestPermissionWriteStorage();
+            }
         }
     }
+
+    @Override
+    public <T extends Item> void update(RequestResult result, List<T> list) {
+        getViewState().hideWaitLoad();
+        if (result == RequestResult.REQUEST_RESUTL_SUCC){
+            getViewState().updateList((List<Item>)list);
+        }
+        else if (result == RequestResult.REQUEST_RESULT_FAIL_STORAGE_INACCESSIBLE){
+            getViewState().requestPermission(REQUEST_PERMISSION_WRITE_STORAGE_CODE);
+        }
+    }
+
+
 }

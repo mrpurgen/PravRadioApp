@@ -1,5 +1,6 @@
 package eugenzh.ru.pravradioapp.View.FragmentList;
 
+import android.Manifest;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,8 +9,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -30,7 +34,9 @@ import eugenzh.ru.pravradioapp.Models.Item.Item;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;
 import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenter;
 import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenterFactory;
+import eugenzh.ru.pravradioapp.Presenters.PodcastViewPresenter;
 import eugenzh.ru.pravradioapp.R;
+import eugenzh.ru.pravradioapp.View.CustomToast;
 
 public class FragmentList extends MvpAppCompatFragment implements ItemView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -59,6 +65,7 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView, Swip
 
         return fragmentList;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,6 +120,51 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView, Swip
     }
 
     @Override
+    public void showPopupPodcast(View holder, final int position) {
+        PopupMenu menu = new PopupMenu(getContext(), holder);
+        menu.inflate(R.menu.popup_podcast);
+        menu.setGravity(Gravity.RIGHT);
+
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()){
+                    case R.id.popup_podcast_download:
+                        if (presenter instanceof PodcastViewPresenter){
+                            ((PodcastViewPresenter)presenter).downloadPodcast(getContext(), position);
+                        }
+                        break;
+                }
+                return true;
+            }
+        });
+
+        menu.show();
+    }
+
+    @Override
+    public void requestPermission(int requestCode) {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
+    }
+
+    @Override
+    public void showFailRequestPermissionWriteStorage() {
+        showToast(getString(R.string.msg_error_write_permission));
+    }
+
+    @Override
+    public void showToast(String text) {
+        CustomToast.showMessage(getContext(), text);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        presenter.handlerResultRequestPermissionWriteStorage(getContext(), requestCode, permissions, grantResults);
+    }
+
+    @Override
     public void onRefresh() {
         swipeRefresh.setRefreshing(false);
         presenter.updateContent();
@@ -139,7 +191,8 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView, Swip
         }
     }
 
-     class FragmentListPodcastHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+     class FragmentListPodcastHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+                                                                                View.OnLongClickListener{
         TextView podcastTitle;
         TextView podcastDate;
 
@@ -147,6 +200,7 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView, Swip
             super(inflater.inflate(R.layout.podcast_list_item, parent, false));
 
              itemView.setOnClickListener(this);
+             itemView.setOnLongClickListener(this);
 
             podcastDate = itemView.findViewById(R.id.podcast_date);
             podcastTitle = itemView.findViewById(R.id.podcast_title);
@@ -163,6 +217,12 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView, Swip
          @Override
          public void onClick(View view) {
              presenter.onClick(getLayoutPosition());
+         }
+
+         @Override
+         public boolean onLongClick(View view) {
+             presenter.onLongClick(view, getLayoutPosition());
+             return false;
          }
      }
 

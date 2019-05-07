@@ -22,4 +22,9 @@ abstract public class DateViewPodcast extends DataView<Podcast> implements Handl
         this.items.addAll(items);
         notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, this.items);
     }
+
+    @Override
+    public void onFailRequestResultItem(RequestResult code) {
+
+    }
 }

@@ -22,4 +22,9 @@ abstract public class DateViewCategory extends DataView<Category> implements Han
         this.items.addAll(items);
         notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, this.items);
     }
+
+    @Override
+    public void onFailRequestResultItem(RequestResult code) {
+        notifyObserversDateView(code, this.items);
+    }
 }

@@ -8,7 +8,6 @@ import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewObserver;
 import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
 import eugenzh.ru.pravradioapp.Models.DataView.Observer.SelectedItemObserver;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
-import eugenzh.ru.pravradioapp.Models.Repository.Repository;
 
 abstract public class DataView<T extends Item> implements DateViewSubject {
     protected List<DateViewObserver> observersUpdateDateView = new ArrayList<>();
@@ -29,6 +28,19 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
 
     public List<T> getItems(){
         return items;
+    }
+
+    public T getItem(int position) { return items.get(position); }
+
+    public T getItemToId(long id){
+        for (T item: items){
+            Long currentid = item.getId();
+            if (currentid.equals(id)){
+                return item;
+            }
+        }
+        /// TODO: throw exception
+        return null;
     }
 
     @Override
