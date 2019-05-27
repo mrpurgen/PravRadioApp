@@ -9,7 +9,6 @@ import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.RequestResult;
 import eugenzh.ru.pravradioapp.Models.DataView.CategoriesMemorySinglton;
-import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;

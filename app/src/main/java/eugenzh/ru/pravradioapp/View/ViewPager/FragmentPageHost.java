@@ -1,5 +1,6 @@
 package eugenzh.ru.pravradioapp.View.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.arellomobile.mvp.presenter.PresenterType;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.TypeItems;
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
@@ -26,13 +28,19 @@ import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
 import eugenzh.ru.pravradioapp.Models.DataView.Observer.SelectedItemObserver;
 import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenter;
 import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenterFactory;
+import eugenzh.ru.pravradioapp.Presenters.PageHostPresenter;
 import eugenzh.ru.pravradioapp.R;
 import eugenzh.ru.pravradioapp.View.FragmentList.FragmentList;
+import eugenzh.ru.pravradioapp.View.ListActivity;
 
 
-public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedItemObserver {
+public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedItemObserver, PageHostView {
+    final static private String TAG_FRAGMENT_SERVER_DATA = "TAG_FRAGMENT_SERVER_DATA";
+    final static private String TAG_FRAGMENT_MEMORY_DATA = "TAG_FRAGMENT_MEMORY_DATA";
     TypeSourceItems resourseType;
 
+    @InjectPresenter
+    PageHostPresenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,18 +65,34 @@ public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedI
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        Fragment fragment = new FragmentList();
+        String tag;
+
+        if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
+            tag = TAG_FRAGMENT_MEMORY_DATA;
+        }
+        else if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
+            tag = TAG_FRAGMENT_SERVER_DATA;
+        }
+        else{
+            tag = "TAG_UNKNOW_FRAGMENT";
+        }
 
         FragmentManager fragmentManager = getFragmentManager();
+
+        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        if (fragment ==  null){
+            fragment = new FragmentList();
+        }
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         bundle.putSerializable("TYPE_ITEM", TypeItems.TYPE_ITEM_CATEGORY);
 
         if (resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
-            fragmentTransaction.replace(R.id.view_page_memory, fragment);
+            fragmentTransaction.replace(R.id.view_page_memory, fragment, tag);
         }
         else if(resourseType == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
-            fragmentTransaction.replace(R.id.view_page_server, fragment);
+            fragmentTransaction.replace(R.id.view_page_server, fragment, tag);
         }
 
         fragment.setArguments(bundle);
@@ -99,10 +123,7 @@ public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedI
             viewID = R.id.view_page_server;
         }
 
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(viewID, fragment)
-                .addToBackStack(null)
-                .commit();
+        Intent intent = ListActivity.newInstance(getContext(), resourseType, TypeItems.TYPE_ITEM_PODCAST);
+        startActivity(intent);
     }
 }

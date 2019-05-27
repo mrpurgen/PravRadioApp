@@ -22,7 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".Services.DownloadService"/>
+        <activity android:name=".View.ListActivity">
+            
+        </activity>        <service android:name=".Services.DownloadService"/>
     </application>
 
 </manifest>
