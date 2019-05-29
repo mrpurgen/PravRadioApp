@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
@@ -25,6 +27,11 @@ public class ListActivity extends MainBaseActivity<ListViewPresenter> implements
 
     @InjectPresenter
     ListViewPresenter presenter;
+
+    @Override
+    void createMenuInflate(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_podcast_menu, menu);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +97,17 @@ public class ListActivity extends MainBaseActivity<ListViewPresenter> implements
     public boolean onSupportNavigateUp() {
         super.onSupportNavigateUp();
         onBackPressed();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.swap){
+            presenter.reverseListItems();
+        }
+        else if (item.getItemId() != R.id.toolbar_search){
+            super.onBackPressed();
+        }
         return true;
     }
 }

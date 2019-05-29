@@ -33,4 +33,9 @@ public class ListViewPresenter extends MainBasePresenter<ListView> {
 
         repoPodcast.filter(textFilter);
     }
+
+    public void reverseListItems(){
+        DateViewPodcast repoPodcast = PodcastsDateViewFactory.getPodcasts(typeSource);
+        repoPodcast.swapListItems();
+    }
 }

@@ -19,6 +19,8 @@ abstract public class MainBaseActivity<T extends MainBasePresenter> extends MvpA
 
     protected MainBasePresenter commonPresenter;
 
+    abstract void createMenuInflate(Menu menu);
+
     void createCommonPresenter(MainBasePresenter presenter){
         commonPresenter = presenter;
     }
@@ -40,7 +42,7 @@ abstract public class MainBaseActivity<T extends MainBasePresenter> extends MvpA
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        createMenuInflate(menu);
         MenuItem menuItem = menu.findItem(R.id.toolbar_search);
         searchView = (SearchView)menuItem.getActionView();
 

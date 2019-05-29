@@ -4,6 +4,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import eugenzh.ru.pravradioapp.Presenters.MainViewPresenter;
@@ -20,6 +22,11 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
 
     @InjectPresenter
     MainViewPresenter presenter;
+
+    @Override
+    void createMenuInflate(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_category_menu, menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
