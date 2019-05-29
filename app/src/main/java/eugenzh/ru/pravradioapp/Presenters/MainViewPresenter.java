@@ -1,16 +1,25 @@
 package eugenzh.ru.pravradioapp.Presenters;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
+import eugenzh.ru.pravradioapp.Models.DataView.CategoriesMemorySinglton;
+import eugenzh.ru.pravradioapp.Models.DataView.CategoriesServerSinglton;
 import eugenzh.ru.pravradioapp.View.MainView;
 
-@InjectViewState
-public class MainViewPresenter extends MvpPresenter<MainView> {
+@InjectViewState(view = MainView.class)
+public class MainViewPresenter extends MainBasePresenter<MainView> {
+
+    CategoriesMemorySinglton repoMemory;
+    CategoriesServerSinglton repoServer;
 
     public MainViewPresenter(){
-        int a = 1;
+        repoMemory = CategoriesMemorySinglton.getInstance();
+        repoServer = CategoriesServerSinglton.getInstance();
+    }
 
-        a++;
+    @Override
+    public void filter(String textFilter){
+        repoMemory.filter(textFilter);
+        repoServer.filter(textFilter);
     }
 }

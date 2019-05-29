@@ -7,11 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import eugenzh.ru.pravradioapp.Common.TypeItems;
@@ -21,9 +18,10 @@ import eugenzh.ru.pravradioapp.R;
 import eugenzh.ru.pravradioapp.View.FragmentList.FragmentList;
 
 
-public class ListActivity extends MvpAppCompatActivity implements ListView{
+public class ListActivity extends MainBaseActivity<ListViewPresenter> implements ListView{
     final static private String TAG_FRAGMENT_PODCAST = "TAG_FRAGMENT_PODCAST";
 
+    Toolbar toolBar;
 
     @InjectPresenter
     ListViewPresenter presenter;
@@ -31,14 +29,23 @@ public class ListActivity extends MvpAppCompatActivity implements ListView{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.list_activity);
+
         Fragment fragment;
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("BUNDLE");
 
         TypeItems typeItems = (TypeItems) bundle.getSerializable("TYPE_ITEMS");
         TypeSourceItems typeSourceItems = (TypeSourceItems)bundle.getSerializable("TYPE_SOURCE");
+
+        presenter.setTypeSource(typeSourceItems);
+        createCommonPresenter(presenter);
+
+        toolBar = findViewById(R.id.toolbar_list_activity);
+        setSupportActionBar(toolBar);
+
+        setTitle(typeSourceItems);
+        displayBackButton();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -63,5 +70,26 @@ public class ListActivity extends MvpAppCompatActivity implements ListView{
         intent.putExtra("BUNDLE", bundle);
 
         return intent;
+    }
+
+    private void setTitle(TypeSourceItems typeSource){
+        String title = presenter.getNameCategoryView();
+        getSupportActionBar().setTitle(title);
+    }
+
+    private void displayBackButton(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        super.onSupportNavigateUp();
+        onBackPressed();
+        return true;
     }
 }

@@ -13,11 +13,13 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
     protected List<DateViewObserver> observersUpdateDateView = new ArrayList<>();
     protected List<SelectedItemObserver> observersSelectedItem = new ArrayList<>();
 
-    protected List<T> items = new ArrayList<>();;
+    protected List<T> itemsSrc = new ArrayList<>();
+    protected List<T> itemsView = new ArrayList();
+
     long selectedItemID = 0;
 
     public void setSelectedItem(int position){
-        Item item = items.get(position);
+        Item item = itemsView.get(position);
         selectedItemID = item.getId();
         notifyObserversSelectedItem(selectedItemID);
     }
@@ -26,14 +28,14 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
         return selectedItemID;
     }
 
-    public List<T> getItems(){
-        return items;
+    public List<T> getItemsSrc(){
+        return itemsSrc;
     }
 
-    public T getItem(int position) { return items.get(position); }
+    public T getItem(int position) { return itemsSrc.get(position); }
 
     public T getItemToId(long id){
-        for (T item: items){
+        for (T item: itemsSrc){
             Long currentid = item.getId();
             if (currentid.equals(id)){
                 return item;
@@ -41,6 +43,24 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
         }
         /// TODO: throw exception
         return null;
+    }
+
+    public String getNameItem(long id){
+        T item = getItemToId(id);
+        return item.getName();
+    }
+
+    public void filter(String filterTetx){
+        itemsView.clear();
+
+        String text = filterTetx.toLowerCase();
+        for(T item: itemsSrc){
+            String name = item.getName().toLowerCase();
+            if (name.contains(text)){
+                itemsView.add(item);
+            }
+        }
+        notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, itemsView);
     }
 
     @Override

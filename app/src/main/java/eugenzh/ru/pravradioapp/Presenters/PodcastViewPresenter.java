@@ -2,7 +2,6 @@ package eugenzh.ru.pravradioapp.Presenters;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -28,10 +27,10 @@ import eugenzh.ru.pravradioapp.Services.DownloadService;
 @InjectViewState
 public class PodcastViewPresenter extends ItemViewPresenter implements DateViewObserver {
 
-    DateViewSubject subject;
-    DateViewPodcast repository;
-    long categoryID = 0;
-    int itemDownloadingPosition = 0;
+    private DateViewSubject subject;
+    private DateViewPodcast repository;
+    private long categoryID = 0;
+    private int itemDownloadingPosition = 0;
 
     public PodcastViewPresenter(TypeSourceItems type) {
         super(type);

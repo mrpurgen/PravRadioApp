@@ -2,5 +2,5 @@ package eugenzh.ru.pravradioapp.View;
 
 import com.arellomobile.mvp.MvpView;
 
-public interface MainView extends MainBaseView {
+public interface MainBaseView extends MvpView {
 }

@@ -18,13 +18,15 @@ abstract public class DateViewCategory extends DataView<Category> implements Han
 
     @Override
     public void onSuccRequestItems(List<Category> items) {
-        this.items.clear();
-        this.items.addAll(items);
-        notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, this.items);
+        this.itemsSrc.clear();
+        this.itemsSrc.addAll(items);
+        this.itemsView.addAll(items);
+
+        notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, this.itemsSrc);
     }
 
     @Override
     public void onFailRequestResultItem(RequestResult code) {
-        notifyObserversDateView(code, this.items);
+        notifyObserversDateView(code, this.itemsSrc);
     }
 }

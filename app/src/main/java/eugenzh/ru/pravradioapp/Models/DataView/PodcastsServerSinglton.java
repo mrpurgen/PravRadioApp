@@ -1,8 +1,5 @@
 package eugenzh.ru.pravradioapp.Models.DataView;
 
-import java.util.List;
-
-import eugenzh.ru.pravradioapp.Models.Item.Podcast;
 import eugenzh.ru.pravradioapp.Models.Repository.Repository;
 import eugenzh.ru.pravradioapp.Models.Repository.ServerRepository;
 

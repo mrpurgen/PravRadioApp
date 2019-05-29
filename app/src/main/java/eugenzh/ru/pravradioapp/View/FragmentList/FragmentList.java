@@ -11,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -39,13 +39,15 @@ import eugenzh.ru.pravradioapp.Presenters.PodcastViewPresenter;
 import eugenzh.ru.pravradioapp.R;
 import eugenzh.ru.pravradioapp.View.CustomToast;
 
-public class FragmentList extends MvpAppCompatFragment implements ItemView, SwipeRefreshLayout.OnRefreshListener {
+public class FragmentList extends MvpAppCompatFragment implements ItemView,
+                                                                   SwipeRefreshLayout.OnRefreshListener{
 
     TypeItems typeItem;
     TypeSourceItems typeSourceITems;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefresh;
     RecyclerView recyclerView;
+    SearchView searchView;
     FragmentListAdapter recyclerAdapter;
 
     @InjectPresenter
@@ -74,6 +76,7 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView, Swip
         typeItem = (TypeItems) bundle.getSerializable("TYPE_ITEM");
         typeSourceITems = (TypeSourceItems) bundle.getSerializable("RESOURSE_TYPE");
 
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
 

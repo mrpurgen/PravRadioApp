@@ -10,10 +10,10 @@ import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
 import eugenzh.ru.pravradioapp.View.FragmentList.ItemView;
 
 
-abstract public class ItemViewPresenter extends MvpPresenter<ItemView>  {
+abstract public class ItemViewPresenter extends MvpPresenter<ItemView>{
     protected static final int REQUEST_PERMISSION_WRITE_STORAGE_CODE = 1;
 
-    TypeSourceItems typeSourceItems;
+    protected TypeSourceItems typeSourceItems;
 
     public void setTypeSourceItems(TypeSourceItems type){
         typeSourceItems = type;

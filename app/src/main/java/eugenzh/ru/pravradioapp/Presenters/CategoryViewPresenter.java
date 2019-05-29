@@ -13,7 +13,6 @@ import java.util.List;
 import eugenzh.ru.pravradioapp.Common.RequestResult;
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
 import eugenzh.ru.pravradioapp.Models.DataView.CategoriesDateViewFactory;
-import eugenzh.ru.pravradioapp.Models.DataView.CategoriesServerSinglton;
 import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
 import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewObserver;
 import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
