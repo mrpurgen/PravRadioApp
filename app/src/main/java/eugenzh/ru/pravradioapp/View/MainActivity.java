@@ -19,6 +19,7 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
     private ViewPager viewPager;
     private ViewPagerAdapter viewPagerAdapter;
     private Toolbar toolbar;
+    PlayerControlCustomView playerControl;
 
     @InjectPresenter
     MainViewPresenter presenter;
@@ -32,6 +33,9 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        playerControl = (PlayerControlCustomView)findViewById(R.id.player_ctrl_view);
+        playerControl.init(getMvpDelegate());
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
