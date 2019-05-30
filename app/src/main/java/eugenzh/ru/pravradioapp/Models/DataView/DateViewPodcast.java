@@ -25,14 +25,16 @@ abstract public class DateViewPodcast extends DataView<Podcast> implements Handl
     @Override
     public void onSuccRequestItems(List<Podcast> items) {
         this.itemsSrc.clear();
+        this.itemsView.clear();
+
         this.itemsSrc.addAll(items);
         this.itemsView.addAll(items);
 
-        notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, this.itemsSrc);
+        notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, this.itemsView);
     }
 
     @Override
     public void onFailRequestResultItem(RequestResult code) {
-
+        notifyObserversDateView(code, this.itemsView);
     }
 }
