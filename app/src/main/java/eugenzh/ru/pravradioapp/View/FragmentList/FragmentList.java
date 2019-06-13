@@ -55,7 +55,7 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
 
     @ProvidePresenter
     ItemViewPresenter providePresenter(){
-        return ItemViewPresenterFactory.getPresenter(typeItem, typeSourceITems);
+        return ItemViewPresenterFactory.getPresenter(typeItem, typeSourceITems, getContext());
     }
 
     public static FragmentList newInstance(TypeItems typeItem, TypeSourceItems typeSource){

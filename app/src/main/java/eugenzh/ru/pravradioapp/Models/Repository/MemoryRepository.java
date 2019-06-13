@@ -12,12 +12,12 @@ import eugenzh.ru.pravradioapp.Models.DataView.CategoriesMemorySinglton;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;
+import eugenzh.ru.pravradioapp.Preferences.PreferencesManager;
 
 public class MemoryRepository implements Repository {
 
     @Override
     public void requestCategories(HandlerRequestItems handler) {
-
         String pathBaseDir = getBaseDirURL();
         File mainDir = new File(pathBaseDir);
         long id = 1;

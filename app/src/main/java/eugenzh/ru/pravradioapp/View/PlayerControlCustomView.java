@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpDelegate;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.PlaybackPreparer;
@@ -120,6 +121,11 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
 
   @InjectPresenter
   PlayerControlPresenter presenter;
+
+  @ProvidePresenter
+  PlayerControlPresenter providePresenter(){
+    return new PlayerControlPresenter(getContext());
+  }
 
   public PlayerControlCustomView(Context context) {
     this(context, null);

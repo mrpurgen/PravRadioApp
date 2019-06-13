@@ -23,7 +23,7 @@ public class CategoryViewPresenter extends ItemViewPresenter implements DateView
     DateViewSubject subject;
     DateViewCategory repository;
 
-    public CategoryViewPresenter(TypeSourceItems type){
+    public CategoryViewPresenter(TypeSourceItems type, Context ctx){
         super(type);
 
         subject = CategoriesDateViewFactory.getCategories(typeSourceItems);

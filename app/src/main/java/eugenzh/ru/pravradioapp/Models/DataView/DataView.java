@@ -50,6 +50,11 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
         return item.getName();
     }
 
+    public String getURL(long id){
+        T item = getItemToId(id);
+        return item.getUrl();
+    }
+
     public void filter(String filterTetx){
         itemsView.clear();
 

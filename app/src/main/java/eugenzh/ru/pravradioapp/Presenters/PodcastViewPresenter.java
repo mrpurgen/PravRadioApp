@@ -27,20 +27,22 @@ import eugenzh.ru.pravradioapp.Services.DownloadService;
 @InjectViewState
 public class PodcastViewPresenter extends ItemViewPresenter implements DateViewObserver {
 
-    private DateViewSubject subject;
-    private DateViewPodcast repository;
-    private long categoryID = 0;
-    private int itemDownloadingPosition = 0;
+    private DateViewSubject mSubject;
+    private DateViewPodcast mRepository;
+    private long mCategoryID = 0;
+    private int mItemDownloadingPosition = 0;
+    private Context mContext;
 
-    public PodcastViewPresenter(TypeSourceItems type) {
+    public PodcastViewPresenter(TypeSourceItems type, Context ctx) {
         super(type);
 
-        subject = PodcastsDateViewFactory.getPodcasts(typeSourceItems);
-        repository = PodcastsDateViewFactory.getPodcasts(typeSourceItems);
-        subject.subscripEventUpdateView(this);
+        mContext = ctx;
+        mSubject = PodcastsDateViewFactory.getPodcasts(typeSourceItems);
+        mRepository = PodcastsDateViewFactory.getPodcasts(typeSourceItems);
+        mSubject.subscripEventUpdateView(this);
 
         DateViewCategory repositoryCategory = CategoriesDateViewFactory.getCategories(typeSourceItems);
-        categoryID = repositoryCategory.getSelectedItemID();
+        mCategoryID = repositoryCategory.getSelectedItemID();
     }
 
     @Override
@@ -52,7 +54,7 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
 
     @Override
     public void onDestroy() {
-        subject.unsubscripEventUpdateView(this);
+        mSubject.unsubscripEventUpdateView(this);
     }
 
     @Override
@@ -63,7 +65,7 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
     @Override
     public void updateContent() {
         getViewState().showWaitLoad();
-        repository.update(categoryID);
+        mRepository.update(mCategoryID);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
     }
 
     public void downloadPodcast(Context context, int position){
-        itemDownloadingPosition = position;
+        mItemDownloadingPosition = position;
         boolean permissionWriteStorageExist = checkPermissionWriteStorage(context);
 
         if(permissionWriteStorageExist){
@@ -109,10 +111,10 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
     }
 
     private void startDownloading(Context context){
-        Podcast podcast = repository.getItem(itemDownloadingPosition);
+        Podcast podcast = mRepository.getItem(mItemDownloadingPosition);
 
         DateViewCategory repositoryCategory = CategoriesDateViewFactory.getCategories(typeSourceItems);
-        Category category = repositoryCategory.getItemToId(categoryID);
+        Category category = repositoryCategory.getItemToId(mCategoryID);
 
         DownloadService.startService(context, podcast.getUrl(), category.getName(), podcast.getName() + ".mp3");
     }
