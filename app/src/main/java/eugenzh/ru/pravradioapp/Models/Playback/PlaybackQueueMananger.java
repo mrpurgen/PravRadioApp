@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+import eugenzh.ru.pravradioapp.Models.DataView.CategoriesDateViewFactory;
+import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
 import eugenzh.ru.pravradioapp.Models.DataView.DateViewPodcast;
 import eugenzh.ru.pravradioapp.Models.DataView.PodcastsDateViewFactory;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
@@ -29,6 +31,7 @@ public class PlaybackQueueMananger {
 
     public PlaybackQueueMananger(MetadataUpdateListener listener){
         mMetadataUpdateListener = listener;
+        mPlayableCategory = new Category("undefined");
     }
 
     public TypeSourceItems getCurrentTypeSource() {
@@ -67,7 +70,6 @@ public class PlaybackQueueMananger {
     public void setCurrentPlayableID(long id){
         mCurrentPlayableID = id;
         mCurrentplayableposition = getPositionFromId(id);
-        updateMetadata();
     }
 
     public long getCurrentPlayableID() {
@@ -96,7 +98,7 @@ public class PlaybackQueueMananger {
 
     public String getNamePlayablePodcast(){
         for (Podcast podcast: mPlayList) {
-            if (podcast.getCategoryId().equals(mCurrentPlayableID)){
+            if (podcast.getId().equals(mCurrentPlayableID)){
                 return podcast.getName();
             }
         }
@@ -135,6 +137,34 @@ public class PlaybackQueueMananger {
         }
         return 0;
     }
+
+    public void updateInfoPlayback(long durationTrack){
+        DateViewPodcast podcastRepo = PodcastsDateViewFactory.getPodcasts(mRequestedTypeSource);
+        DateViewCategory categoryRepo = CategoriesDateViewFactory.getCategories(mRequestedTypeSource);
+        long requestedIDCategory = categoryRepo.getSelectedItemID();
+
+        if ( (mCurrentTypeSource != mRequestedTypeSource) || (mPlayableCategory.getId() != requestedIDCategory)){
+            mPlayList.addAll(podcastRepo.getItemsSrc());
+            mPlayableCategory = categoryRepo.getItemToId(requestedIDCategory);
+        }
+
+        mCurrentTypeSource = mRequestedTypeSource;
+        mCurrentPlayableID = mRequestedPlayID;
+        mPodcastDuration = durationTrack;
+
+        podcastRepo.setSelectedItem(mCurrentPlayableID);
+
+        if (mCurrentTypeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
+            DateViewPodcast repo = PodcastsDateViewFactory.getPodcasts(TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER);
+            repo.setSelectedItem(0L);
+        }
+        else if (mCurrentTypeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
+            DateViewPodcast repo = PodcastsDateViewFactory.getPodcasts(TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY);
+            repo.setSelectedItem(0L);
+        }
+    }
+
+
 
     public interface MetadataUpdateListener{
         void onMetadataChanged(MediaMetadataCompat metadata);

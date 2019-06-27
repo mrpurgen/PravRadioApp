@@ -5,6 +5,8 @@ import android.os.SystemClock;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+
 public class PlaybackManager implements Playback.Callback{
 
     private PlaybackQueueMananger mPlaybackQueueMananger;
@@ -38,6 +40,10 @@ public class PlaybackManager implements Playback.Callback{
             mPlayback.pause();
             mServiceCallback.onPlaybackStop();
         }
+    }
+
+    public void handleContinuePlay(){
+        mPlayback.returnFromPause();
     }
 
     public void handleStopRequest(){
@@ -74,7 +80,7 @@ public class PlaybackManager implements Playback.Callback{
         return actions;
     }
 
-    /// Implements metod Playback.Callback interface
+    /// Implements metods Playback.Callback interface
     @Override
     public void onCompletion() {
         if (mPlaybackQueueMananger.skipQueuePosition(1)){
@@ -99,7 +105,15 @@ public class PlaybackManager implements Playback.Callback{
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
             mPlaybackQueueMananger.setRequestedPlayID(Long.valueOf(mediaId));
+
+            TypeSourceItems typeSource = (TypeSourceItems) extras.getSerializable("TYPE_SOURCE");
+            mPlaybackQueueMananger.setRequestedTypeSource(typeSource);
             handlePlayRequest();
+        }
+
+        @Override
+        public void onPlay() {
+            handleContinuePlay();
         }
 
         @Override

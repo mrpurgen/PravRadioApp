@@ -24,6 +24,11 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
         notifyObserversSelectedItem(selectedItemID);
     }
 
+    public void setSelectedItem(long id){
+        selectedItemID = id;
+        notifyObserversSelectedItem(selectedItemID);
+    }
+
     public long getSelectedItemID(){
         return selectedItemID;
     }
@@ -32,7 +37,7 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
         return itemsSrc;
     }
 
-    public T getItem(int position) { return itemsSrc.get(position); }
+    public T getItem(int position) { return itemsView.get(position); }
 
     public T getItemToId(long id){
         for (T item: itemsSrc){
@@ -53,6 +58,15 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
     public String getURL(long id){
         T item = getItemToId(id);
         return item.getUrl();
+    }
+
+    public int getPositionViewListById(long id){
+        for(Item item: itemsView){
+            if(item.getId().equals(id)){
+                return itemsView.indexOf(item);
+            }
+        }
+        return -1;
     }
 
     public void filter(String filterTetx){

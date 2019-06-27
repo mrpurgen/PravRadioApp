@@ -42,20 +42,21 @@ import eugenzh.ru.pravradioapp.View.CustomToast;
 public class FragmentList extends MvpAppCompatFragment implements ItemView,
                                                                    SwipeRefreshLayout.OnRefreshListener{
 
-    TypeItems typeItem;
-    TypeSourceItems typeSourceITems;
+    private TypeItems typeItem;
+    private TypeSourceItems typeSourceITems;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefresh;
-    RecyclerView recyclerView;
-    SearchView searchView;
-    FragmentListAdapter recyclerAdapter;
+    private RecyclerView recyclerView;
+    private SearchView searchView;
+    private FragmentListAdapter recyclerAdapter;
+    private int mPosition = -1;
 
     @InjectPresenter
     ItemViewPresenter presenter;
 
     @ProvidePresenter
     ItemViewPresenter providePresenter(){
-        return ItemViewPresenterFactory.getPresenter(typeItem, typeSourceITems, getContext());
+        return ItemViewPresenterFactory.getPresenter(typeItem, typeSourceITems, getContext().getApplicationContext());
     }
 
     public static FragmentList newInstance(TypeItems typeItem, TypeSourceItems typeSource){
@@ -172,6 +173,14 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
     public void onRefresh() {
         swipeRefresh.setRefreshing(false);
         presenter.updateContent();
+    }
+
+    @Override
+    public void updatePlayablePosition(int position) {
+        int bufPosition = mPosition;
+        mPosition = position;
+        recyclerAdapter.notifyItemChanged(bufPosition);
+        recyclerAdapter.notifyItemChanged(mPosition);
     }
 
     class FragmentListCategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -298,6 +307,14 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
 
         private void configurePodcastViewHolder(FragmentListPodcastHolder ph, int position){
             Podcast podcast = (Podcast) items.get(position);
+
+            if (mPosition != position){
+                ph.podcastTitle.setTextColor(getResources().getColor(R.color.colorBlack));
+            }
+            else{
+                ph.podcastTitle.setTextColor(getResources().getColor(R.color.colorGrayMaterial));
+            }
+
             ph.setPodcastDate(podcast.getDate().toString());
             ph.setPodcastTitle(podcast.getName());
         }

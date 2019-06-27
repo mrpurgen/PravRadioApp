@@ -45,7 +45,7 @@ public class MemoryRepository implements Repository {
         File dirPodcast = new File(path);
         File[] files = dirPodcast.listFiles();
         List<Item> listItems = new ArrayList<>();
-        long id = 1;
+        long id = categoryId * 1000L;
 
         for (File file: files){
             if (file.isFile()){
@@ -54,6 +54,7 @@ public class MemoryRepository implements Repository {
                 podcast.setId(id);
                 podcast.setUrl(path + File.separator + file.getName());
                 podcast.setDate(date);
+                podcast.setCategoryId(categoryId);
 
                 listItems.add(podcast);
                 ++id;

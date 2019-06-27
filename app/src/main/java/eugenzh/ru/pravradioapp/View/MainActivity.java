@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import eugenzh.ru.pravradioapp.Presenters.MainViewPresenter;
 import eugenzh.ru.pravradioapp.R;
@@ -23,6 +24,11 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
 
     @InjectPresenter
     MainViewPresenter presenter;
+
+    @ProvidePresenter
+    MainViewPresenter providerPresenter(){
+        return new MainViewPresenter(getApplicationContext());
+    }
 
     @Override
     void createMenuInflate(Menu menu) {

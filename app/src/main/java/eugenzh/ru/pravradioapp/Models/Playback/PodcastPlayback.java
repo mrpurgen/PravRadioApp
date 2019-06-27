@@ -97,7 +97,7 @@ public class PodcastPlayback implements Playback{
 
     @Override
     public boolean isConnected() {
-        return false;
+        return true;
     }
 
     @Override
@@ -123,9 +123,12 @@ public class PodcastPlayback implements Playback{
         if (isPodcastChanged()){
             releaseResourse(false);
 
-            mPlayer = ExoPlayerFactory.newSimpleInstance(mContext,new DefaultRenderersFactory(mContext),
-                                                         new DefaultTrackSelector(), new DefaultLoadControl());
+            if (mPlayer == null) {
+                mPlayer = ExoPlayerFactory.newSimpleInstance(mContext, new DefaultRenderersFactory(mContext),
+                        new DefaultTrackSelector(), new DefaultLoadControl());
 
+                mPlayer.addListener(mPlayerEventListener);
+            }
 
             MediaSource mediaSource = mediaSourceBuild();
             mPlayer.prepare(mediaSource);
@@ -242,6 +245,13 @@ public class PodcastPlayback implements Playback{
     }
 
     @Override
+    public void returnFromPause() {
+        if (mPlayer != null){
+            mPlayer.setPlayWhenReady(true);
+        }
+    }
+
+    @Override
     public void seekTo(long position) {
         if (mPlayer != null){
             mPlayer.seekTo(position);
@@ -281,13 +291,20 @@ public class PodcastPlayback implements Playback{
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
             switch (playbackState) {
-                case Player.STATE_IDLE:
-                case Player.STATE_BUFFERING:
+                //case Player.STATE_IDLE:
+                //case Player.STATE_BUFFERING:
                 case Player.STATE_READY:
 
-                    setInfoCurrentPlaylist(playbackState);
-                    if (mCallback != null) {
-                        mCallback.onPlaybackStatusChanged(getState());
+                    if (playWhenReady) {
+                        setInfoCurrentPlaylist(playbackState);
+                        if (mCallback != null) {
+                            mCallback.onPlaybackStatusChanged(getState());
+                        }
+                    }
+                    else {
+                        if (mCallback != null) {
+                            mCallback.onPlaybackStatusChanged(PlaybackStateCompat.STATE_PAUSED);
+                        }
                     }
                     break;
                 case Player.STATE_ENDED:
@@ -300,12 +317,7 @@ public class PodcastPlayback implements Playback{
 
         private void setInfoCurrentPlaylist(int playbackState){
             if (playbackState == Player.STATE_READY) {
-                long requestedID = mPlayListManager.getRequestedPlayID();
-                TypeSourceItems requestedTypeSourceItems = mPlayListManager.getRequestedTypeSource();
-
-                mPlayListManager.setCurrentPlayableID(requestedID);
-                mPlayListManager.setRequestedTypeSource(requestedTypeSourceItems);
-
+                mPlayListManager.updateInfoPlayback(mPlayer.getDuration());
                 mPlayListManager.updateMetadata();
             }
         }

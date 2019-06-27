@@ -29,5 +29,7 @@ public interface ItemView extends MvpView {
     void showFailRequestPermissionWriteStorage();
     @StateStrategyType(OneExecutionStateStrategy.class)
     void showToast(String text);
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void updatePlayablePosition(int position);
 
 }

@@ -10,6 +10,8 @@ import android.support.v4.media.session.MediaControllerCompat;
 
 public class PlaybackServiceConnectionManager {
     private MediaControllerCompat mMediaController;
+    private ServiceConnectionCallback mCallback;
+
 
     public ServiceConnection connection(Context context){
         ServiceConnection connection = new ServiceConnection() {
@@ -18,8 +20,14 @@ public class PlaybackServiceConnectionManager {
                 PlaybackService.PlayerServiceBinder binder = (PlaybackService.PlayerServiceBinder)iBinder;
                 try {
                     mMediaController = new MediaControllerCompat(context, binder.getMediaSessionToken());
+
+                    if (mCallback != null) {
+                        mCallback.onSuccConnection();
+                    }
                 } catch (RemoteException e) {
-                    ///TODO
+                    if (mCallback != null) {
+                        mCallback.onFailConnection(e);
+                    }
                 }
             }
 
@@ -35,11 +43,21 @@ public class PlaybackServiceConnectionManager {
         return connection;
     }
 
+    public void setCallback(ServiceConnectionCallback callback){
+        mCallback = callback;
+    }
+
     public void disconnection(Context context, ServiceConnection connection){
         context.unbindService(connection);
     }
 
     public MediaControllerCompat getMediaController() {
         return mMediaController;
+    }
+
+
+    public interface ServiceConnectionCallback{
+        void onSuccConnection();
+        void onFailConnection(RemoteException e);
     }
 }

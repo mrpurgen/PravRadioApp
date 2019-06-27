@@ -115,6 +115,7 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
   boolean enablePrevious = false;
   boolean enableNext = false;
   boolean playState = false;
+  boolean isSeekable = false;
 
   private MvpDelegate parentDelegat;
   private MvpDelegate<PlayerControlCustomView> delegat;
@@ -124,7 +125,7 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
 
   @ProvidePresenter
   PlayerControlPresenter providePresenter(){
-    return new PlayerControlPresenter(getContext());
+    return new PlayerControlPresenter(getContext().getApplicationContext());
   }
 
   public PlayerControlCustomView(Context context) {
@@ -182,7 +183,6 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
 
     playButton = findViewById(R.id.playback_play);
     playButton.setOnClickListener(new View.OnClickListener(){
-
         @Override
         public void onClick(View view) {
             presenter.onPlayPressed();
@@ -190,6 +190,12 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
     });
 
     pauseButton = findViewById(R.id.playback_pause);
+    pauseButton.setOnClickListener(new View.OnClickListener(){
+      @Override
+      public void onClick(View view) {
+        presenter.onPausePressed();
+      }
+    });
 
     previousButton = findViewById(R.id.playback_prev);
 
@@ -239,6 +245,7 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
         getMvpDelegate().onSaveInstanceState();
         getMvpDelegate().onDetach();
     }
+
 
     @SuppressWarnings("ResourceType")
   private static @RepeatModeUtil.RepeatToggleModes int getRepeatToggleModes(
@@ -344,10 +351,6 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
       return;
     }
 
-    boolean isSeekable = false;
-    boolean enablePrevious = false;
-    boolean enableNext = false;
-
     setButtonEnabled(enablePrevious, previousButton);
     setButtonEnabled(enableNext, nextButton);
 
@@ -404,5 +407,47 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
   public void onDetachedFromWindow() {
     super.onDetachedFromWindow();
     isAttachedToWindow = false;
+  }
+
+  @Override
+  public void playView() {
+    playState = true;
+    enablePrevious = true;
+    enableNext = true;
+    isSeekable = true;
+    updateAll();
+  }
+
+  @Override
+  public void pauseView() {
+    playState = false;
+    updateAll();
+  }
+
+  @Override
+    public void setTrackName(String trackName) {
+        this.trackName.setText(trackName);
+    }
+
+  @Override
+  public void setTrackDuration(long duration) {
+    timeBar.setDuration(duration);
+    durationView.setText(Util.getStringForTime(formatBuilder, formatter, duration));
+  }
+
+  @Override
+  public void setTrackPosition(long position) {
+    timeBar.setPosition(position);
+    positionView.setText(Util.getStringForTime(formatBuilder, formatter, position));
+  }
+
+  @Override
+  public void hidePanel() {
+    hide();
+  }
+
+  @Override
+  public void showPanel() {
+    show();
   }
 }

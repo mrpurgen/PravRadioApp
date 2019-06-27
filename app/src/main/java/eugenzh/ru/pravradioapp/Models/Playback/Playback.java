@@ -15,6 +15,7 @@ public interface Playback {
     void pause();
     void seekTo(long position);
     void setCallback(Callback callback);
+    void returnFromPause();
 
     interface Callback{
         void onCompletion();
