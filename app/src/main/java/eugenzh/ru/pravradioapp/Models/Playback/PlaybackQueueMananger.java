@@ -144,6 +144,7 @@ public class PlaybackQueueMananger {
         long requestedIDCategory = categoryRepo.getSelectedItemID();
 
         if ( (mCurrentTypeSource != mRequestedTypeSource) || (mPlayableCategory.getId() != requestedIDCategory)){
+            mPlayList.clear();
             mPlayList.addAll(podcastRepo.getItemsSrc());
             mPlayableCategory = categoryRepo.getItemToId(requestedIDCategory);
         }
@@ -151,6 +152,7 @@ public class PlaybackQueueMananger {
         mCurrentTypeSource = mRequestedTypeSource;
         mCurrentPlayableID = mRequestedPlayID;
         mPodcastDuration = durationTrack;
+        mCurrentplayableposition = getPositionFromId(mCurrentPlayableID);
 
         podcastRepo.setSelectedItem(mCurrentPlayableID);
 

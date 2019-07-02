@@ -254,6 +254,7 @@ public class PodcastPlayback implements Playback{
     @Override
     public void seekTo(long position) {
         if (mPlayer != null){
+
             mPlayer.seekTo(position);
         }
     }
@@ -292,7 +293,7 @@ public class PodcastPlayback implements Playback{
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
             switch (playbackState) {
                 //case Player.STATE_IDLE:
-                //case Player.STATE_BUFFERING:
+                case Player.STATE_BUFFERING:
                 case Player.STATE_READY:
 
                     if (playWhenReady) {
@@ -314,7 +315,6 @@ public class PodcastPlayback implements Playback{
                     break;
             }
         }
-
         private void setInfoCurrentPlaylist(int playbackState){
             if (playbackState == Player.STATE_READY) {
                 mPlayListManager.updateInfoPlayback(mPlayer.getDuration());
@@ -345,5 +345,7 @@ public class PodcastPlayback implements Playback{
                 mCallback.onError("Player error: " + errorMessage);
             }
         }
+
+
     }
 }

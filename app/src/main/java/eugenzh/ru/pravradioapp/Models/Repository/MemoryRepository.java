@@ -20,12 +20,18 @@ public class MemoryRepository implements Repository {
     public void requestCategories(HandlerRequestItems handler) {
         String pathBaseDir = getBaseDirURL();
         File mainDir = new File(pathBaseDir);
+
+        if (mainDir == null){
+            handler.onFailRequestResultItem(RequestResult.REQUEST_RESULT_FAIL_RESOURSE_NOT_CREATED);
+            return;
+        }
+
         long id = 1;
         List<Item> listItems = new ArrayList<>();
         File[] dirs = mainDir.listFiles();
 
         if (dirs == null){
-            handler.onFailRequestResultItem(RequestResult.REQUEST_RESULT_FAIL_STORAGE_INACCESSIBLE);
+            handler.onFailRequestResultItem(RequestResult.REQUEST_RESULT_FAIL_RESOURSE_NOT_CREATED);
             return;
         }
 
@@ -35,7 +41,6 @@ public class MemoryRepository implements Repository {
             listItems.add(category);
             ++id;
         }
-
         handler.onSuccRequestItems(listItems);
     }
 
@@ -43,6 +48,7 @@ public class MemoryRepository implements Repository {
     public void requestPodcasts(long categoryId, HandlerRequestItems handler) {
         String path = getPathToPodcasts(categoryId);
         File dirPodcast = new File(path);
+
         File[] files = dirPodcast.listFiles();
         List<Item> listItems = new ArrayList<>();
         long id = categoryId * 1000L;

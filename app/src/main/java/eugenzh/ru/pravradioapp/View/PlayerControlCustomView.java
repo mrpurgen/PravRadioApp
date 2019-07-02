@@ -180,6 +180,22 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
     durationView = findViewById(R.id.playback_duration);
     positionView = findViewById(R.id.playback_position);
     timeBar = findViewById(R.id.playback_progress);
+    timeBar.addListener(new TimeBar.OnScrubListener() {
+      @Override
+      public void onScrubStart(TimeBar timeBar, long position) {
+        presenter.onStartScroll();
+      }
+
+      @Override
+      public void onScrubMove(TimeBar timeBar, long position) {
+        presenter.onSetPosition(position);
+      }
+
+      @Override
+      public void onScrubStop(TimeBar timeBar, long position, boolean canceled) {
+        presenter.onStopScroll(position);
+      }
+    });
 
     playButton = findViewById(R.id.playback_play);
     playButton.setOnClickListener(new View.OnClickListener(){
@@ -198,8 +214,21 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
     });
 
     previousButton = findViewById(R.id.playback_prev);
+    previousButton.setOnClickListener(new View.OnClickListener(){
+
+        @Override
+        public void onClick(View view) {
+            presenter.onPrevPressed();
+        }
+    });
 
     nextButton = findViewById(R.id.playback_next);
+    nextButton.setOnClickListener(new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            presenter.onNextPressed();
+        }
+    });
 
     repeatToggleButton = findViewById(R.id.playback_repeat_toggle);
 
@@ -395,7 +424,6 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
     view.setVisibility(VISIBLE);
   }
 
-
   @Override
   public void onAttachedToWindow() {
     super.onAttachedToWindow();
@@ -449,5 +477,11 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
   @Override
   public void showPanel() {
     show();
+  }
+
+  @Override
+  public void setPosiotionProgressBar(long position) {
+    timeBar.setPosition(position);
+    positionView.setText(Util.getStringForTime(formatBuilder, formatter, position));
   }
 }

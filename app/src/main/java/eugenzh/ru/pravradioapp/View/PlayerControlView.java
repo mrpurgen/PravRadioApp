@@ -2,6 +2,8 @@ package eugenzh.ru.pravradioapp.View;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import eugenzh.ru.pravradioapp.View.FragmentList.AddToEndSingleByTagStateStrategy;
@@ -24,6 +26,8 @@ public interface PlayerControlView extends MvpView {
     void hidePanel();
     @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = TAG_SHOW_CONTROL_PANEL)
     void showPanel();
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void setPosiotionProgressBar(long position);
 
 
 }

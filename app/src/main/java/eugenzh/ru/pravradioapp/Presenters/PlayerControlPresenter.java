@@ -14,6 +14,8 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.util.concurrent.TimeUnit;
+
 import eugenzh.ru.pravradioapp.Services.PlaybackServiceConnectionManager;
 import eugenzh.ru.pravradioapp.Services.SheduleService;
 import eugenzh.ru.pravradioapp.View.CustomToast;
@@ -64,9 +66,31 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
         }
     }
 
-    public void onPausePressed(){
+   public void onPausePressed(){
         mMediaController.getTransportControls().pause();
     }
+
+   public void onStartScroll(){
+       mSheduleServiceUpdateProgress.stop();
+   }
+
+   public void onSetPosition(long position){
+
+        getViewState().setPosiotionProgressBar(position);
+   }
+
+   public void onStopScroll(long position){
+       getViewState().setPosiotionProgressBar(position);
+       mMediaController.getTransportControls().seekTo(position);
+   }
+
+   public void onPrevPressed(){
+        mMediaController.getTransportControls().skipToPrevious();
+   }
+
+   public void onNextPressed(){
+        mMediaController.getTransportControls().skipToNext();
+   }
 
     @Override
     public void onSuccConnection() {
@@ -84,8 +108,8 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
             return;
         }
 
-        mCurrentPlaybackState = state;
 
+        mCurrentPlaybackState = state;
         switch(state.getState()){
             case PlaybackStateCompat.STATE_PLAYING:
                 mSheduleServiceUpdateProgress.start();
@@ -94,7 +118,7 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
             break;
 
             case PlaybackStateCompat.STATE_PAUSED:
-                mSheduleServiceUpdateProgress.stop();
+            //    mSheduleServiceUpdateProgress.stop();
                 getViewState().pauseView();
             break;
 
@@ -107,9 +131,9 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
             return;
         }
 
+        mCurrentPositionPB = mCurrentPlaybackState.getPosition();
         if (mCurrentPlaybackState.getState() == PlaybackStateCompat.STATE_PLAYING){
-            mCurrentPositionPB = mCurrentPlaybackState.getPosition();
-            long time = mCurrentPlaybackState.getLastPositionUpdateTime();;
+            long time = mCurrentPlaybackState.getLastPositionUpdateTime();
 
             long timeDelta = SystemClock.elapsedRealtime() - time;
             mCurrentPositionPB += ((int) timeDelta * mCurrentPlaybackState.getPlaybackSpeed());
