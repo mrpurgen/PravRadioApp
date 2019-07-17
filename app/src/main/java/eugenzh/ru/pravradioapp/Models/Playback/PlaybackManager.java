@@ -38,7 +38,7 @@ public class PlaybackManager implements Playback.Callback{
     public void handlePauseRequest(){
         if (mPlayback.isPlaying()){
             mPlayback.pause();
-            mServiceCallback.onPlaybackStop();
+            //mServiceCallback.onPlaybackStop();
         }
     }
 
@@ -66,6 +66,11 @@ public class PlaybackManager implements Playback.Callback{
         stateBuilder.setState(state, position, 1.0f, SystemClock.elapsedRealtime());
 
         mServiceCallback.onPlaybackStateUpdate(stateBuilder.build());
+
+        if ( (state == PlaybackStateCompat.STATE_PLAYING) ||
+              state == PlaybackStateCompat.STATE_PAUSED){
+                mServiceCallback.onNotificationRequired();
+        }
     }
 
     private long getAvailableActions(){

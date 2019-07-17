@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.media.MediaBrowserCompat;
@@ -29,6 +30,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
     private MediaSessionCompat mMediaSession;
     private PlaybackQueueMananger mPlaybackQueueMananger;
     private Playback mPlayback;
+    private MediaNotificationManager mNotificationManager;
 
     @Nullable
     @Override
@@ -70,6 +72,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
         mPlayback = new PodcastPlayback(this, mPlaybackQueueMananger);
 
         mMediaSession = new MediaSessionCompat(this, "PravRadioService");
+        setSessionToken(mMediaSession.getSessionToken());
 
         mPlaybackManager = new PlaybackManager(mPlaybackQueueMananger, this, mPlayback);
 
@@ -83,12 +86,19 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
 
         Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null, appContext, MediaButtonReceiver.class);
         mMediaSession.setMediaButtonReceiver(PendingIntent.getBroadcast(appContext, 0, mediaButtonIntent, 0));
+
+        try {
+            mNotificationManager = new MediaNotificationManager(this);
+        } catch (RemoteException e) {
+            //e.printStackTrace();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mPlaybackManager.handleStopRequest();
+        mNotificationManager.stopNotification();
         mMediaSession.release();
     }
 
@@ -119,7 +129,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
 
     @Override
     public void onNotificationRequired() {
-
+        mNotificationManager.startNotification();
     }
 
 

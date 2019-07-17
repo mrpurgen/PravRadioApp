@@ -78,7 +78,7 @@ public class PodcastPlayback implements Playback{
 
         switch(mPlayer.getPlaybackState()){
             case Player.STATE_IDLE:
-                return PlaybackStateCompat.STATE_PAUSED;
+                return PlaybackStateCompat.STATE_STOPPED;
 
             case Player.STATE_BUFFERING:
                 return PlaybackStateCompat.STATE_BUFFERING;
@@ -292,7 +292,7 @@ public class PodcastPlayback implements Playback{
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
             switch (playbackState) {
-                //case Player.STATE_IDLE:
+                case Player.STATE_IDLE:
                 case Player.STATE_BUFFERING:
                 case Player.STATE_READY:
 
@@ -319,6 +319,9 @@ public class PodcastPlayback implements Playback{
             if (playbackState == Player.STATE_READY) {
                 mPlayListManager.updateInfoPlayback(mPlayer.getDuration());
                 mPlayListManager.updateMetadata();
+            }
+            else if (playbackState == Player.STATE_IDLE){
+                mPlayListManager.cleanInfoPlayback();
             }
         }
 

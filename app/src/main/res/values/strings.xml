@@ -5,5 +5,11 @@
     <string name="msg_error_write_permission">Ошибка получения разрешения на запись</string>
     <string name="notify_download_channel_desc">notify for download progress podcast</string>
     <string name="download_notify_title">Downloading</string>
-    <string name="notify_channel_name">prav radio notify</string>
+    <string name="notify_channel_name">PravRadioApp Notifications</string>
+    <string name="pause">Pause</string>
+    <string name="play">Play</string>
+    <string name="previus">Previus</string>
+    <string name="stop">Stop</string>
+    <string name="next">Next</string>
+    <string name="notify_player_desc">notity for player radio</string>
 </resources>

@@ -122,6 +122,9 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
                 getViewState().pauseView();
             break;
 
+            case PlaybackStateCompat.STATE_STOPPED:
+                getViewState().hidePanel();
+                break;
         }
 
     }

@@ -18,10 +18,10 @@ public class PlaybackQueueMananger {
 
     private List<Podcast> mPlayList = new ArrayList<>();
 
-    private long mCurrentPlayableID = 0;
-    private long mRequestedPlayID = 0;
-    private long mPodcastDuration = 0;
-    private int mCurrentplayableposition = 0;
+    private long mCurrentPlayableID = 0L;
+    private long mRequestedPlayID = 0L;
+    private long mPodcastDuration = 0L;
+    private int mCurrentPlayablePosition = 0;
 
     private TypeSourceItems mCurrentTypeSource = TypeSourceItems.TYPE_SOURCE_UNDEFINED;
     private TypeSourceItems mRequestedTypeSource = TypeSourceItems.TYPE_SOURCE_UNDEFINED;
@@ -69,7 +69,7 @@ public class PlaybackQueueMananger {
 
     public void setCurrentPlayableID(long id){
         mCurrentPlayableID = id;
-        mCurrentplayableposition = getPositionFromId(id);
+        mCurrentPlayablePosition = getPositionFromId(id);
     }
 
     public long getCurrentPlayableID() {
@@ -116,7 +116,7 @@ public class PlaybackQueueMananger {
     }
 
     public boolean skipQueuePosition(int countSkipPosition){
-        int position = mCurrentplayableposition + countSkipPosition;
+        int position = mCurrentPlayablePosition + countSkipPosition;
 
         if (position < 0){
             position = 0;
@@ -152,7 +152,7 @@ public class PlaybackQueueMananger {
         mCurrentTypeSource = mRequestedTypeSource;
         mCurrentPlayableID = mRequestedPlayID;
         mPodcastDuration = durationTrack;
-        mCurrentplayableposition = getPositionFromId(mCurrentPlayableID);
+        mCurrentPlayablePosition = getPositionFromId(mCurrentPlayableID);
 
         podcastRepo.setSelectedItem(mCurrentPlayableID);
 
@@ -166,6 +166,21 @@ public class PlaybackQueueMananger {
         }
     }
 
+    public void cleanInfoPlayback(){
+        DateViewPodcast podcastRepo = PodcastsDateViewFactory.getPodcasts(mCurrentTypeSource);
+        if (podcastRepo != null){
+            podcastRepo.setSelectedItem(0L);
+        }
+
+        mCurrentTypeSource = TypeSourceItems.TYPE_SOURCE_UNDEFINED;
+        mRequestedTypeSource = TypeSourceItems.TYPE_SOURCE_UNDEFINED;
+
+        mCurrentPlayableID = 0L;
+        mRequestedPlayID = 0L;
+
+        mPlayList.clear();
+        mPlayableCategory = new Category("undefined");
+    }
 
 
     public interface MetadataUpdateListener{
