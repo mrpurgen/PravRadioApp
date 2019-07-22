@@ -1,14 +1,14 @@
-package eugenzh.ru.pravradioapp.Models.DataView;
+package eugenzh.ru.pravradioapp.Models.DataStore;
 
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
 
-public class PodcastsDateViewFactory {
-    public static DateViewPodcast getPodcasts(TypeSourceItems typeSource){
+public class PodcastsStoreFactory {
+    public static DataStorePodcast getPodcasts(TypeSourceItems typeSource){
         if (typeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
-            return PodcastsMemorySinglton.getInstance();
+            return PodcastsMemoryStoreSinglton.getInstance();
         }
         else if (typeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
-            return PodcastsServerSinglton.getInstance();
+            return PodcastsServerStoreSinglton.getInstance();
         }
          ///TODO: add throw exception
         return null;

@@ -1,20 +1,22 @@
-package eugenzh.ru.pravradioapp.Models.DataView;
+package eugenzh.ru.pravradioapp.Models.DataStore;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.RequestResult;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewObserver;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.SelectedItemObserver;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.DataStoreObserver;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.DataStoreSubject;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.SelectedItemObserver;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 
-abstract public class DataView<T extends Item> implements DateViewSubject {
-    protected List<DateViewObserver> observersUpdateDateView = new ArrayList<>();
+abstract public class DataStore<T extends Item> implements DataStoreSubject {
+    protected List<DataStoreObserver> observersUpdateDateView = new ArrayList<>();
     protected List<SelectedItemObserver> observersSelectedItem = new ArrayList<>();
 
     protected List<T> itemsSrc = new ArrayList<>();
     protected List<T> itemsView = new ArrayList();
+
+    boolean isNotifyObserversDataStore = false;
 
     long selectedItemID = 0;
 
@@ -79,25 +81,29 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
                 itemsView.add(item);
             }
         }
-        notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, itemsView);
+        notifyObserversDataStore(RequestResult.REQUEST_RESUTL_SUCC, itemsView);
     }
 
     @Override
-    public <T extends Item> void notifyObserversDateView(RequestResult result, List<T> list) {
-        for (DateViewObserver observer: observersUpdateDateView){
+    public <T extends Item> void notifyObserversDataStore(RequestResult result, List<T> list) {
+        isNotifyObserversDataStore = true;
+        for (DataStoreObserver observer: observersUpdateDateView){
             observer.update(result, list);
         }
+        isNotifyObserversDataStore = false;
     }
 
     @Override
     public void notifyObserversSelectedItem(long id) {
         for (SelectedItemObserver observer: observersSelectedItem){
             observer.update(selectedItemID);
+
+
         }
     }
 
     @Override
-    public void subscripEventUpdateView(DateViewObserver observer) {
+    public void subscripEventUpdateView(DataStoreObserver observer) {
         observersUpdateDateView.add(observer);
     }
 
@@ -112,7 +118,7 @@ abstract public class DataView<T extends Item> implements DateViewSubject {
     }
 
     @Override
-    public void unsubscripEventUpdateView(DateViewObserver observer) {
+    public void unsubscripEventUpdateView(DataStoreObserver observer) {
         observersUpdateDateView.remove(observer);
     }
 

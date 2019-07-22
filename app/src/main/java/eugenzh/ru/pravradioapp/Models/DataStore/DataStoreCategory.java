@@ -1,4 +1,4 @@
-package eugenzh.ru.pravradioapp.Models.DataView;
+package eugenzh.ru.pravradioapp.Models.DataStore;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Repository.HandlerRequestItems;
 import eugenzh.ru.pravradioapp.Models.Repository.Repository;
 
-abstract public class DateViewCategory extends DataView<Category> implements HandlerRequestItems<Category> {
+abstract public class DataStoreCategory extends DataStore<Category> implements HandlerRequestItems<Category> {
     abstract Repository createRepositoryLoader();
 
     public void update()
@@ -24,11 +24,11 @@ abstract public class DateViewCategory extends DataView<Category> implements Han
         this.itemsSrc.addAll(items);
         this.itemsView.addAll(items);
 
-        notifyObserversDateView(RequestResult.REQUEST_RESUTL_SUCC, this.itemsView);
+        notifyObserversDataStore(RequestResult.REQUEST_RESUTL_SUCC, this.itemsView);
     }
 
     @Override
     public void onFailRequestResultItem(RequestResult code) {
-        notifyObserversDateView(code, this.itemsView);
+        notifyObserversDataStore(code, this.itemsView);
     }
 }

@@ -9,6 +9,7 @@ import android.view.Menu;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
+import eugenzh.ru.pravradioapp.Preferences.PreferencesPlaybackManager;
 import eugenzh.ru.pravradioapp.Presenters.MainViewPresenter;
 import eugenzh.ru.pravradioapp.R;
 import eugenzh.ru.pravradioapp.View.ViewPager.ViewPagerAdapter;

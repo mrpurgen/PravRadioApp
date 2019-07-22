@@ -92,6 +92,8 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
         } catch (RemoteException e) {
             //e.printStackTrace();
         }
+
+        mPlaybackQueueMananger.loadInfoPlaybackPref(this);
     }
 
     @Override
@@ -99,6 +101,7 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
         super.onDestroy();
         mPlaybackManager.handleStopRequest();
         mNotificationManager.stopNotification();
+
         mMediaSession.release();
     }
 
@@ -106,12 +109,6 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
     public int onStartCommand(Intent intent, int flags, int startId) {
         MediaButtonReceiver.handleIntent(mMediaSession, intent);
         return START_STICKY;
-    }
-
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        super.onTaskRemoved(rootIntent);
-        stopSelf();
     }
 
     /// Implements metods PlaybackManager.PlaybackServiceCallback

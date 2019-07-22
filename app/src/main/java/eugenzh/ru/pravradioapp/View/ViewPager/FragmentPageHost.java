@@ -13,21 +13,12 @@ import android.view.ViewGroup;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.PresenterType;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
-
-import java.lang.reflect.Type;
-import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.TypeItems;
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
-import eugenzh.ru.pravradioapp.Models.DataView.CategoriesDateViewFactory;
-import eugenzh.ru.pravradioapp.Models.DataView.CategoriesServerSinglton;
-import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.SelectedItemObserver;
-import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenter;
-import eugenzh.ru.pravradioapp.Presenters.ItemViewPresenterFactory;
+import eugenzh.ru.pravradioapp.Models.DataStore.CategoriesStoreFactory;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.DataStoreSubject;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.SelectedItemObserver;
 import eugenzh.ru.pravradioapp.Presenters.PageHostPresenter;
 import eugenzh.ru.pravradioapp.R;
 import eugenzh.ru.pravradioapp.View.FragmentList.FragmentList;
@@ -49,7 +40,7 @@ public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedI
         Bundle bundle = getArguments();
         resourseType = (TypeSourceItems) bundle.getSerializable("RESOURSE_TYPE");
 
-        DateViewSubject subject = CategoriesDateViewFactory.getCategories(resourseType);
+        DataStoreSubject subject = CategoriesStoreFactory.getCategories(resourseType);
         subject.subscripEventUpdateSelectedItem(this);
     }
 
@@ -57,7 +48,7 @@ public class FragmentPageHost  extends MvpAppCompatFragment implements SelectedI
     public void onDestroy() {
         super.onDestroy();
 
-        DateViewSubject subject = CategoriesDateViewFactory.getCategories(resourseType);
+        DataStoreSubject subject = CategoriesStoreFactory.getCategories(resourseType);
         subject.unsubscripEventUpdateSelectedItem(this);
     }
 

@@ -8,11 +8,10 @@ import java.sql.Date;
 import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.RequestResult;
-import eugenzh.ru.pravradioapp.Models.DataView.CategoriesMemorySinglton;
+import eugenzh.ru.pravradioapp.Models.DataStore.CategoriesMemoryStoreSinglton;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;
-import eugenzh.ru.pravradioapp.Preferences.PreferencesManager;
 
 public class MemoryRepository implements Repository {
 
@@ -82,7 +81,7 @@ public class MemoryRepository implements Repository {
     private String getPathToPodcasts(long categoryId){
        StringBuilder pathBuilder = new StringBuilder();
 
-       CategoriesMemorySinglton categorys = CategoriesMemorySinglton.getInstance();
+       CategoriesMemoryStoreSinglton categorys = CategoriesMemoryStoreSinglton.getInstance();
        Category category = categorys.getItemToId(categoryId);
 
        pathBuilder.append(getBaseDirURL());

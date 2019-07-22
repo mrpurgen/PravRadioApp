@@ -240,6 +240,7 @@ public class PodcastPlayback implements Playback{
     public void pause() {
         if (mPlayer != null){
             mPlayer.setPlayWhenReady(false);
+            mPlayListManager.savePositionToPreferences(mContext, getCurrentStreamPosition());
         }
         releaseResourse(false);
     }
@@ -254,8 +255,8 @@ public class PodcastPlayback implements Playback{
     @Override
     public void seekTo(long position) {
         if (mPlayer != null){
-
             mPlayer.seekTo(position);
+            mPlayListManager.savePositionToPreferences(mContext, getCurrentStreamPosition());
         }
     }
 
@@ -319,8 +320,10 @@ public class PodcastPlayback implements Playback{
             if (playbackState == Player.STATE_READY) {
                 mPlayListManager.updateInfoPlayback(mPlayer.getDuration());
                 mPlayListManager.updateMetadata();
+                mPlayListManager.saveInfoToPreferences(mContext);
             }
             else if (playbackState == Player.STATE_IDLE){
+                mPlayListManager.savePositionToPreferences(mContext, getCurrentStreamPosition());
                 mPlayListManager.cleanInfoPlayback();
             }
         }

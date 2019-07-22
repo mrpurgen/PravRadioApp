@@ -9,7 +9,6 @@ import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.View;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -18,13 +17,14 @@ import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.RequestResult;
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
-import eugenzh.ru.pravradioapp.Models.DataView.CategoriesDateViewFactory;
-import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
-import eugenzh.ru.pravradioapp.Models.DataView.DateViewPodcast;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewObserver;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.DateViewSubject;
-import eugenzh.ru.pravradioapp.Models.DataView.Observer.SelectedItemObserver;
-import eugenzh.ru.pravradioapp.Models.DataView.PodcastsDateViewFactory;
+import eugenzh.ru.pravradioapp.Models.DataStore.CategoriesStoreFactory;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreCategory;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacade;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacadeImp;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStorePodcast;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.DataStoreObserver;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.SelectedItemObserver;
+import eugenzh.ru.pravradioapp.Models.DataStore.PodcastsStoreFactory;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;
@@ -33,12 +33,12 @@ import eugenzh.ru.pravradioapp.Services.PlaybackServiceConnectionManager;
 import eugenzh.ru.pravradioapp.View.CustomToast;
 
 @InjectViewState
-public class PodcastViewPresenter extends ItemViewPresenter implements DateViewObserver,
+public class PodcastViewPresenter extends ItemViewPresenter implements DataStoreObserver,
                                                                        SelectedItemObserver,
                                                                        PlaybackServiceConnectionManager.ServiceConnectionCallback{
 
-    private DateViewSubject mSubject;
-    private DateViewPodcast mRepository;
+    private DataStorePodcast mDataStorePodcast;
+    private DataStoreFacade mDataStore;
     private long mCategoryID = 0;
     private int mItemDownloadingPosition = 0;
     private Context mContext;
@@ -51,14 +51,17 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
         super(type);
 
         mContext = ctx;
-        mSubject = PodcastsDateViewFactory.getPodcasts(typeSourceItems);
-        mRepository = PodcastsDateViewFactory.getPodcasts(typeSourceItems);
-        mSubject.subscripEventUpdateView(this);
-        mSubject.subscripEventUpdateSelectedItem(this);
 
-        DateViewCategory repositoryCategory = CategoriesDateViewFactory.getCategories(typeSourceItems);
+        mDataStore = new DataStoreFacadeImp();
+        mDataStorePodcast = mDataStore.getDataStorePodcast(type);
+
+        mDataStorePodcast = PodcastsStoreFactory.getPodcasts(typeSourceItems);
+        mDataStorePodcast.subscripEventUpdateView(this);
+        mDataStorePodcast.subscripEventUpdateSelectedItem(this);
+
+        DataStoreCategory repositoryCategory = CategoriesStoreFactory.getCategories(typeSourceItems);
         mCategoryID = repositoryCategory.getSelectedItemID();
-        mPlayablePodcastId = mRepository.getSelectedItemID();
+        mPlayablePodcastId = mDataStorePodcast.getSelectedItemID();
 
         connectToPlaybackService();
     }
@@ -78,14 +81,14 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
 
     @Override
     public void onDestroy() {
-        mSubject.unsubscripEventUpdateView(this);
-        mSubject.unsubscripEventUpdateSelectedItem(this);
+        mDataStorePodcast.unsubscripEventUpdateView(this);
+        mDataStorePodcast.unsubscripEventUpdateSelectedItem(this);
         mServiceConnectionManager.disconnection(mContext, mServiceConnection);
     }
 
     @Override
     public void onClick(int position) {
-        Podcast podcast = mRepository.getItem(position);
+        Podcast podcast = mDataStorePodcast.getItem(position);
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("TYPE_SOURCE", typeSourceItems);
@@ -96,12 +99,14 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
     @Override
     public void updateContent() {
         getViewState().showWaitLoad();
-        mRepository.update(mCategoryID);
+        mDataStorePodcast.update(mCategoryID);
     }
 
     @Override
     public void onLongClick(View view, int position) {
-        getViewState().showPopupPodcast(view, position);
+        if (typeSourceItems == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER) {
+            getViewState().showPopupPodcast(view, position);
+        }
     }
 
     @Override
@@ -121,7 +126,7 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
     }
 
     private void updatePlayablePosition(){
-        int position = mRepository.getPositionViewListById(mPlayablePodcastId);
+        int position = mDataStorePodcast.getPositionViewListById(mPlayablePodcastId);
         getViewState().updatePlayablePosition(position);
     }
 
@@ -155,10 +160,10 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DateViewO
     }
 
     private void startDownloading(Context context){
-        Podcast podcast = mRepository.getItem(mItemDownloadingPosition);
+        Podcast podcast = mDataStorePodcast.getItem(mItemDownloadingPosition);
 
-        DateViewCategory repositoryCategory = CategoriesDateViewFactory.getCategories(typeSourceItems);
-        Category category = repositoryCategory.getItemToId(mCategoryID);
+        DataStoreCategory dataStoreCategory = mDataStore.getDataStoreCategory(typeSourceItems);
+        Category category = dataStoreCategory.getItemToId(mCategoryID);
 
         DownloadService.startService(context, podcast.getUrl(), category.getName(), podcast.getName() + ".mp3");
     }

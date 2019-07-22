@@ -127,7 +127,7 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
     @Override
     public void showPopupPodcast(View holder, final int position) {
         PopupMenu menu = new PopupMenu(getContext(), holder);
-        menu.inflate(R.menu.popup_podcast);
+        menu.inflate(R.menu.popup_podcast_server);
         menu.setGravity(Gravity.RIGHT);
 
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

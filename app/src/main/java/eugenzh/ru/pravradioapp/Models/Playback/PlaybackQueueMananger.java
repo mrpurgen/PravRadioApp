@@ -1,17 +1,19 @@
 package eugenzh.ru.pravradioapp.Models.Playback;
 
+import android.content.Context;
 import android.support.v4.media.MediaMetadataCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
-import eugenzh.ru.pravradioapp.Models.DataView.CategoriesDateViewFactory;
-import eugenzh.ru.pravradioapp.Models.DataView.DateViewCategory;
-import eugenzh.ru.pravradioapp.Models.DataView.DateViewPodcast;
-import eugenzh.ru.pravradioapp.Models.DataView.PodcastsDateViewFactory;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreCategory;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacade;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacadeImp;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStorePodcast;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;
+import eugenzh.ru.pravradioapp.Preferences.PreferencesPlaybackManager;
 
 public class PlaybackQueueMananger {
     private final MediaMetadataCompat.Builder metaDataBuilder = new MediaMetadataCompat.Builder();
@@ -29,9 +31,12 @@ public class PlaybackQueueMananger {
     private Category mPlayableCategory;
     private MetadataUpdateListener mMetadataUpdateListener;
 
+    private DataStoreFacade mDataStore;
+
     public PlaybackQueueMananger(MetadataUpdateListener listener){
         mMetadataUpdateListener = listener;
         mPlayableCategory = new Category("undefined");
+        mDataStore = new DataStoreFacadeImp();
     }
 
     public TypeSourceItems getCurrentTypeSource() {
@@ -106,13 +111,13 @@ public class PlaybackQueueMananger {
     }
 
     public String getNameRequstedPodcast(){
-        DateViewPodcast podcastRepo = PodcastsDateViewFactory.getPodcasts(mRequestedTypeSource);
-        return podcastRepo.getNameItem(mRequestedPlayID);
+        DataStorePodcast dataStorePodcast = mDataStore.getDataStorePodcast(mRequestedTypeSource);
+        return dataStorePodcast.getNameItem(mRequestedPlayID);
     }
 
     public String getRequestedPathToItem(){
-        DateViewPodcast podcastRepo = PodcastsDateViewFactory.getPodcasts(mRequestedTypeSource);
-        return podcastRepo.getURL(mRequestedPlayID);
+        DataStorePodcast dataStorePodcast = mDataStore.getDataStorePodcast(mRequestedTypeSource);
+        return dataStorePodcast.getURL(mRequestedPlayID);
     }
 
     public boolean skipQueuePosition(int countSkipPosition){
@@ -139,14 +144,14 @@ public class PlaybackQueueMananger {
     }
 
     public void updateInfoPlayback(long durationTrack){
-        DateViewPodcast podcastRepo = PodcastsDateViewFactory.getPodcasts(mRequestedTypeSource);
-        DateViewCategory categoryRepo = CategoriesDateViewFactory.getCategories(mRequestedTypeSource);
-        long requestedIDCategory = categoryRepo.getSelectedItemID();
+        DataStorePodcast dataStorePodcast = mDataStore.getDataStorePodcast(mRequestedTypeSource);
+        DataStoreCategory dataStoreCategory = mDataStore.getDataStoreCategory(mRequestedTypeSource);
+        long requestedIDCategory = dataStoreCategory.getSelectedItemID();
 
         if ( (mCurrentTypeSource != mRequestedTypeSource) || (mPlayableCategory.getId() != requestedIDCategory)){
             mPlayList.clear();
-            mPlayList.addAll(podcastRepo.getItemsSrc());
-            mPlayableCategory = categoryRepo.getItemToId(requestedIDCategory);
+            mPlayList.addAll(dataStorePodcast.getItemsSrc());
+            mPlayableCategory = dataStoreCategory.getItemToId(requestedIDCategory);
         }
 
         mCurrentTypeSource = mRequestedTypeSource;
@@ -154,22 +159,51 @@ public class PlaybackQueueMananger {
         mPodcastDuration = durationTrack;
         mCurrentPlayablePosition = getPositionFromId(mCurrentPlayableID);
 
-        podcastRepo.setSelectedItem(mCurrentPlayableID);
+        dataStorePodcast.setSelectedItem(mCurrentPlayableID);
 
         if (mCurrentTypeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
-            DateViewPodcast repo = PodcastsDateViewFactory.getPodcasts(TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER);
+            DataStorePodcast repo = mDataStore.getDataStorePodcast(TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER);
             repo.setSelectedItem(0L);
         }
         else if (mCurrentTypeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER){
-            DateViewPodcast repo = PodcastsDateViewFactory.getPodcasts(TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY);
+            DataStorePodcast repo = mDataStore.getDataStorePodcast(TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY);
             repo.setSelectedItem(0L);
         }
     }
 
+    public void saveInfoToPreferences(Context ctx){
+        PreferencesPlaybackManager pref = new PreferencesPlaybackManager(ctx);
+
+        pref.saveTypeSource(mCurrentTypeSource);
+        pref.savePlaybackIds(mPlayableCategory.getId(), mCurrentPlayableID);
+        pref.savePlaybackMainInfo(mPlayableCategory.getName(), getNamePlayablePodcast(), mPodcastDuration);
+    }
+
+    public void loadInfoPlaybackPref(Context ctx){
+        PreferencesPlaybackManager pref = new PreferencesPlaybackManager(ctx);
+
+        if (pref.readTypeSource() != TypeSourceItems.TYPE_SOURCE_UNDEFINED){
+            MediaMetadataCompat metadata = metaDataBuilder
+                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, pref.readDuration())
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, Long.toString(pref.readPodcastId()))
+                    .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, pref.readCategoryName())
+                    .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, pref.readPodcastName())
+                    .build();
+
+            mMetadataUpdateListener.onMetadataChanged(metadata);
+        }
+    }
+
+    public void savePositionToPreferences(Context ctx, long position){
+        PreferencesPlaybackManager pref = new PreferencesPlaybackManager(ctx);
+
+        pref.savePosition(position);
+    }
+
     public void cleanInfoPlayback(){
-        DateViewPodcast podcastRepo = PodcastsDateViewFactory.getPodcasts(mCurrentTypeSource);
-        if (podcastRepo != null){
-            podcastRepo.setSelectedItem(0L);
+        DataStorePodcast dataStorePodcast = mDataStore.getDataStorePodcast(mCurrentTypeSource);
+        if (dataStorePodcast != null){
+            dataStorePodcast.setSelectedItem(0L);
         }
 
         mCurrentTypeSource = TypeSourceItems.TYPE_SOURCE_UNDEFINED;

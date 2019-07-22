@@ -5,6 +5,7 @@ import android.content.Context;
 
 import android.content.ServiceConnection;
 
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.v4.media.MediaMetadataCompat;
@@ -14,15 +15,26 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
+import eugenzh.ru.pravradioapp.Common.RequestResult;
+import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreCategory;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacade;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacadeImp;
+import eugenzh.ru.pravradioapp.Models.DataStore.DataStorePodcast;
+import eugenzh.ru.pravradioapp.Models.DataStore.Observer.DataStoreObserver;
+import eugenzh.ru.pravradioapp.Models.Item.Item;
+import eugenzh.ru.pravradioapp.Preferences.PreferencesPlaybackManager;
 import eugenzh.ru.pravradioapp.Services.PlaybackServiceConnectionManager;
 import eugenzh.ru.pravradioapp.Services.SheduleService;
 import eugenzh.ru.pravradioapp.View.CustomToast;
 import eugenzh.ru.pravradioapp.View.PlayerControlView;
 
 @InjectViewState
-public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> implements PlaybackServiceConnectionManager.ServiceConnectionCallback{
+public class PlayerControlPresenter extends MvpPresenter<PlayerControlView>
+                                    implements PlaybackServiceConnectionManager.ServiceConnectionCallback,
+                                               DataStoreObserver {
     private Context mContext;
     private ServiceConnection mServiceConnection;
     private MediaControllerCompat mMediaController;
@@ -61,9 +73,54 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
     }
 
     public void onPlayPressed(){
-        if (mCurrentPlaybackState.getState() == PlaybackStateCompat.STATE_PAUSED) {
-            mMediaController.getTransportControls().play();
+        if (mCurrentPlaybackState == null){
+            updatePodcastStoreAndPlay();
         }
+        else{
+            int state = mCurrentPlaybackState.getState();
+            if (state == PlaybackStateCompat.STATE_PAUSED) {
+                mMediaController.getTransportControls().play();
+            }
+        }
+    }
+
+    private void updatePodcastStoreAndPlay(){
+        PreferencesPlaybackManager pref = new PreferencesPlaybackManager(mContext);
+        TypeSourceItems typeSource = pref.readTypeSource();
+        Long catgoryId = pref.readCategoryId();
+
+        DataStoreFacade dataStore = new DataStoreFacadeImp();
+        DataStorePodcast dataStorePodcast = dataStore.getDataStorePodcast(typeSource);
+        dataStorePodcast.subscripEventUpdateView(this);
+
+        DataStoreCategory dataStoreCategory = dataStore.getDataStoreCategory(typeSource);
+        dataStoreCategory.setSelectedItem(catgoryId);
+
+
+       // dataStorePodcast.update(catgoryId);
+    }
+
+    @Override
+    public <T extends Item> void update(RequestResult result, List<T> list) {
+        if (mCurrentPlaybackState != null){
+            return;
+        }
+
+        PreferencesPlaybackManager pref = new PreferencesPlaybackManager(mContext);
+
+        TypeSourceItems typeSource = pref.readTypeSource();
+
+        if (result == RequestResult.REQUEST_RESUTL_SUCC){
+            Long podcastId = pref.readPodcastId();
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("TYPE_SOURCE", typeSource);
+
+            mMediaController.getTransportControls().playFromMediaId(String.valueOf(podcastId), bundle);
+            mMediaController.getTransportControls().seekTo(mCurrentPositionPB);
+        }
+
+
     }
 
    public void onPausePressed(){
@@ -96,6 +153,9 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
     public void onSuccConnection() {
         mMediaController = mServiceConnectionManager.getMediaController();
         mMediaController.registerCallback(mMediaControlCallback);
+
+        mMediaControlCallback.onMetadataChanged(mMediaController.getMetadata());
+        mMediaControlCallback.onPlaybackStateChanged(mMediaController.getPlaybackState());
     }
 
     @Override
@@ -107,7 +167,6 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
         if (state == null){
             return;
         }
-
 
         mCurrentPlaybackState = state;
         switch(state.getState()){
@@ -149,18 +208,34 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView> impl
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
 
-            playbackStateChanged(state);
+            if (state != null) {
+                playbackStateChanged(state);
+            }
         }
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             super.onMetadataChanged(metadata);
 
-            String titlePodcast = metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE);
-            getViewState().setTrackName(titlePodcast);
+            if (metadata != null) {
+                if (mCurrentPlaybackState == null){
+                    getPositionFromPref();
 
-            long durationPodcast = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
-            getViewState().setTrackDuration(durationPodcast);
+                    getViewState().showPanel();
+                    getViewState().setPosiotionProgressBar(mCurrentPositionPB);
+                }
+
+                String titlePodcast = metadata.getString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE);
+                getViewState().setTrackName(titlePodcast);
+
+                long durationPodcast = metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+                getViewState().setTrackDuration(durationPodcast);
+            }
+        }
+
+        void getPositionFromPref(){
+            PreferencesPlaybackManager pref = new PreferencesPlaybackManager(mContext);
+            mCurrentPositionPB = pref.readPosition();
         }
     }
 }
