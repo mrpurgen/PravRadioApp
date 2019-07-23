@@ -1,6 +1,9 @@
 package eugenzh.ru.pravradioapp.Models.Playback;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -23,6 +26,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+import eugenzh.ru.pravradioapp.Services.PlaybackService;
 import retrofit2.http.Url;
 
 public class PodcastPlayback implements Playback{
@@ -44,6 +48,19 @@ public class PodcastPlayback implements Playback{
     private int mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
     ExoPlayerEventListener mPlayerEventListener = new ExoPlayerEventListener();
 
+    private final IntentFilter mAudioNoisyIntentFilter =  new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+
+    private BroadcastReceiver mAudioReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (isPlaying()){
+                Intent cmd = new Intent(context, PlaybackService.class);
+                cmd.setAction(PlaybackService.ACTION_CMD);
+                cmd.putExtra(PlaybackService.CMD_NAME, PlaybackService.CMD_PAUSE);
+                mContext.startService(cmd);
+            }
+        }
+    };
 
     public PodcastPlayback(Context ctx, PlaybackQueueMananger playList){
         mContext = ctx.getApplicationContext();
@@ -59,6 +76,7 @@ public class PodcastPlayback implements Playback{
     @Override
     public void stop() {
         giveUpAudioFocus();
+        unRegisterAudioNoisyReceiver();
         mPlayer.stop();
         releaseResourse(true);
     }
@@ -119,6 +137,7 @@ public class PodcastPlayback implements Playback{
         mPlayOnFocusGain = true;
 
         tryToGetAudioFocus();
+        registerAudioNoisyReceiver();
 
         if (isPodcastChanged()){
             releaseResourse(false);
@@ -211,6 +230,8 @@ public class PodcastPlayback implements Playback{
             pause();
         }
         else{
+            registerAudioNoisyReceiver();
+
             if (mCurrentAudioFocusState == AUDIO_NO_FOCUS_CAN_DUCK) {
                 mPlayer.setVolume(VOLUME_DUCK);
             } else {
@@ -225,6 +246,9 @@ public class PodcastPlayback implements Playback{
 
     private void releaseResourse(boolean releasePlayer){
         if ( releasePlayer && (mPlayer != null) ) {
+            mPlayer.release();
+            mPlayer.removeListener(mPlayerEventListener);
+            mPlayer = null;
             mPlayOnFocusGain = false;
         }
     }
@@ -236,12 +260,27 @@ public class PodcastPlayback implements Playback{
         }
     }
 
+    private void registerAudioNoisyReceiver(){
+        if (!mAudioNoisyReceiverRegistered){
+            mContext.registerReceiver(mAudioReceiver, mAudioNoisyIntentFilter);
+            mAudioNoisyReceiverRegistered = true;
+        }
+    }
+
+    private void unRegisterAudioNoisyReceiver(){
+        if (mAudioNoisyReceiverRegistered){
+            mContext.unregisterReceiver(mAudioReceiver);
+            mAudioNoisyReceiverRegistered = false;
+        }
+    }
+
     @Override
     public void pause() {
         if (mPlayer != null){
             mPlayer.setPlayWhenReady(false);
             mPlayListManager.savePositionToPreferences(mContext, getCurrentStreamPosition());
         }
+        unRegisterAudioNoisyReceiver();
         releaseResourse(false);
     }
 
@@ -255,6 +294,7 @@ public class PodcastPlayback implements Playback{
     @Override
     public void seekTo(long position) {
         if (mPlayer != null){
+            registerAudioNoisyReceiver();
             mPlayer.seekTo(position);
             mPlayListManager.savePositionToPreferences(mContext, getCurrentStreamPosition());
         }

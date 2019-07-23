@@ -25,6 +25,11 @@ import eugenzh.ru.pravradioapp.Models.Playback.PodcastPlayback;
 import eugenzh.ru.pravradioapp.View.MainActivity;
 
 public class PlaybackService extends MediaBrowserServiceCompat implements PlaybackManager.PlaybackServiceCallback{
+    public static final String ACTION_CMD = "eugenzh.ru.pravradioapp.ACTION_CMD";
+    public static final String CMD_NAME = "CMD_NAME";
+    public static final String CMD_PAUSE = "CMD_PAUSE";
+
+
     private PlaybackManager mPlaybackManager;
 
     private MediaSessionCompat mMediaSession;
@@ -107,7 +112,19 @@ public class PlaybackService extends MediaBrowserServiceCompat implements Playba
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        MediaButtonReceiver.handleIntent(mMediaSession, intent);
+        if (intent != null){
+            String action = intent.getAction();
+            String cmd = intent.getStringExtra(CMD_NAME);
+
+            if (ACTION_CMD.equals(action)){
+                if (CMD_PAUSE.equals(cmd)){
+                    mPlaybackManager.handlePauseRequest();
+                }
+            }
+            else {
+                MediaButtonReceiver.handleIntent(mMediaSession, intent);
+            }
+        }
         return START_STICKY;
     }
 
