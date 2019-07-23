@@ -2,6 +2,7 @@ package eugenzh.ru.pravradioapp.Models.Repository;
 
 import java.util.List;
 
+import eugenzh.ru.pravradioapp.Common.RequestResult;
 import eugenzh.ru.pravradioapp.Models.HttpConnection.BuildHttpConnection;
 import eugenzh.ru.pravradioapp.Models.HttpConnection.CategoryHttpAPI;
 import eugenzh.ru.pravradioapp.Models.HttpConnection.PodcastHttpAPI;
@@ -33,8 +34,6 @@ public class ServerRepository implements Repository{
     }
 
     private <T extends Item> void loader(Call<List<T>> list, final HandlerRequestItems handler) {
-
-
         list.enqueue(new Callback<List<T>>() {
             @Override
             public void onResponse(Call<List<T>> call, Response<List<T>> response) {
@@ -43,7 +42,7 @@ public class ServerRepository implements Repository{
 
             @Override
             public void onFailure(Call<List<T>> call, Throwable t) {
-                System.out.print("wtf");
+               handler.onFailRequestResultItem(RequestResult.REQUEST_RESULT_FAIL_NETWORK);
             }
         });
     }

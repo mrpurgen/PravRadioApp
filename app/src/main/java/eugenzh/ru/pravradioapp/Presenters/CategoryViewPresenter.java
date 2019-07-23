@@ -20,6 +20,7 @@ import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacade;
 import eugenzh.ru.pravradioapp.Models.DataStore.DataStoreFacadeImp;
 import eugenzh.ru.pravradioapp.Models.DataStore.Observer.DataStoreObserver;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
+import eugenzh.ru.pravradioapp.R;
 
 @InjectViewState
 public class CategoryViewPresenter extends ItemViewPresenter implements DataStoreObserver {
@@ -91,6 +92,10 @@ public class CategoryViewPresenter extends ItemViewPresenter implements DataStor
             if(!checkPermissionWriteStorage(mContex)) {
                 getViewState().requestPermission(REQUEST_PERMISSION_WRITE_STORAGE_CODE);
             }
+        }
+        else if (result == RequestResult.REQUEST_RESULT_FAIL_NETWORK){
+            getViewState().hideWaitLoad();
+            getViewState().showDiagMsg(mContex.getString(R.string.msg_error_network));
         }
     }
 

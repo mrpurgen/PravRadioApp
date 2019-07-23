@@ -6,6 +6,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import eugenzh.ru.pravradioapp.Common.TypeSourceItems;
+import eugenzh.ru.pravradioapp.View.CustomToast;
 
 public class PlaybackManager implements Playback.Callback{
 
@@ -49,10 +50,10 @@ public class PlaybackManager implements Playback.Callback{
     public void handleStopRequest(){
         mPlayback.stop();
         mServiceCallback.onPlaybackStop();
-        updatePlaybackState();
+        updatePlaybackState(null);
     }
 
-    public void updatePlaybackState(){
+    public void updatePlaybackState(String error){
         long position = PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN;
 
         if ( (mPlayback != null) && (mPlayback.isConnected()) ){
@@ -62,6 +63,11 @@ public class PlaybackManager implements Playback.Callback{
         PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder().setActions(getAvailableActions());
 
         int state = mPlayback.getState();
+
+        if (error != null){
+            stateBuilder.setErrorMessage(PlaybackStateCompat.ERROR_CODE_ACTION_ABORTED, error);
+            state = PlaybackStateCompat.STATE_ERROR;
+        }
 
         stateBuilder.setState(state, position, 1.0f, SystemClock.elapsedRealtime());
 
@@ -98,12 +104,12 @@ public class PlaybackManager implements Playback.Callback{
 
     @Override
     public void onError(String errMsg) {
-
+        updatePlaybackState(errMsg);
     }
 
     @Override
     public void onPlaybackStatusChanged(int state) {
-        updatePlaybackState();
+        updatePlaybackState(null);
     }
 
     private class MediaSessionCallback extends MediaSessionCompat.Callback{

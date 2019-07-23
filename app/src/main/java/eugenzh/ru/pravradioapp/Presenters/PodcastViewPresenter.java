@@ -28,6 +28,7 @@ import eugenzh.ru.pravradioapp.Models.DataStore.PodcastsStoreFactory;
 import eugenzh.ru.pravradioapp.Models.Item.Category;
 import eugenzh.ru.pravradioapp.Models.Item.Item;
 import eugenzh.ru.pravradioapp.Models.Item.Podcast;
+import eugenzh.ru.pravradioapp.R;
 import eugenzh.ru.pravradioapp.Services.DownloadService;
 import eugenzh.ru.pravradioapp.Services.PlaybackServiceConnectionManager;
 import eugenzh.ru.pravradioapp.View.CustomToast;
@@ -116,6 +117,10 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DataStore
             getViewState().updateList((List<Item>)list);
 
             updatePlayablePosition();
+        }
+        else if (result == RequestResult.REQUEST_RESULT_FAIL_NETWORK){
+            getViewState().hideWaitLoad();
+            getViewState().showDiagMsg(mContext.getString(R.string.msg_error_network));
         }
     }
 

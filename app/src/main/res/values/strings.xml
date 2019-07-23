@@ -2,7 +2,6 @@
     <string name="app_name">PravRadioApp</string>
     <string name="view_page_audioarchive">Аудиоархив</string>
     <string name="view_page_downloaded">Загружено</string>
-    <string name="msg_error_write_permission">Ошибка получения разрешения на запись</string>
     <string name="notify_download_channel_desc">notify for download progress podcast</string>
     <string name="download_notify_title">Downloading</string>
     <string name="notify_channel_name">PravRadioApp Notifications</string>
@@ -13,4 +12,7 @@
     <string name="next">Next</string>
     <string name="notify_player_desc">notity for player radio</string>
     <string name="popup_podcast_menu_download">Скачать</string>
+
+    <string name="msg_error_write_permission">Ошибка получения разрешения на запись</string>
+    <string name="msg_error_network">Ошибка доступа к серверу</string>
 </resources>

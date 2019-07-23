@@ -183,6 +183,11 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
         recyclerAdapter.notifyItemChanged(mPosition);
     }
 
+    @Override
+    public void showDiagMsg(String msg) {
+        CustomToast.showMessage(getContext(), msg);
+    }
+
     class FragmentListCategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView categoryTitle;
 

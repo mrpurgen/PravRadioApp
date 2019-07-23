@@ -184,6 +184,10 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView>
             case PlaybackStateCompat.STATE_STOPPED:
                 getViewState().hidePanel();
                 break;
+            case PlaybackStateCompat.STATE_ERROR:
+                String errorMsg = mCurrentPlaybackState.getErrorMessage().toString();
+                getViewState().hidePanel();
+                CustomToast.showMessage(mContext,errorMsg);
         }
 
     }

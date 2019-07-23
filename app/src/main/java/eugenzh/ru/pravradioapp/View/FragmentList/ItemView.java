@@ -31,5 +31,7 @@ public interface ItemView extends MvpView {
     void showToast(String text);
     @StateStrategyType(AddToEndSingleStrategy.class)
     void updatePlayablePosition(int position);
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void showDiagMsg(String msg);
 
 }
