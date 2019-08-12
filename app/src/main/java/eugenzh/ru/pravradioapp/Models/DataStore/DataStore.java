@@ -20,6 +20,8 @@ abstract public class DataStore<T extends Item> implements DataStoreSubject {
 
     long selectedItemID = 0;
 
+    protected abstract T createDefaultItem();
+
     public void setSelectedItem(int position){
         Item item = itemsView.get(position);
         selectedItemID = item.getId();
@@ -41,7 +43,7 @@ abstract public class DataStore<T extends Item> implements DataStoreSubject {
 
     public T getItem(int position) { return itemsView.get(position); }
 
-    public T getItemToId(long id){
+    public T getItemById(long id){
         for (T item: itemsSrc){
             Long currentid = item.getId();
             if (currentid.equals(id)){
@@ -49,17 +51,26 @@ abstract public class DataStore<T extends Item> implements DataStoreSubject {
             }
         }
         /// TODO: throw exception
-        return null;
+        return createDefaultItem();
     }
 
     public String getNameItem(long id){
-        T item = getItemToId(id);
-        return item.getName();
+        T item = getItemById(id);
+        return item != null ? item.getName() : "Неизвестаня категория";
     }
 
     public String getURL(long id){
-        T item = getItemToId(id);
+        T item = getItemById(id);
         return item.getUrl();
+    }
+
+    public Long getIdByName(String name){
+        for(Item item: itemsView){
+            if(item.getName().equals(name)){
+                return item.getId();
+            }
+        }
+        return 0L;
     }
 
     public int getPositionViewListById(long id){

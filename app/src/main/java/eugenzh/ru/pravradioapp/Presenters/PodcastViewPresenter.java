@@ -168,7 +168,7 @@ public class PodcastViewPresenter extends ItemViewPresenter implements DataStore
         Podcast podcast = mDataStorePodcast.getItem(mItemDownloadingPosition);
 
         DataStoreCategory dataStoreCategory = mDataStore.getDataStoreCategory(typeSourceItems);
-        Category category = dataStoreCategory.getItemToId(mCategoryID);
+        Category category = dataStoreCategory.getItemById(mCategoryID);
 
         DownloadService.startService(context, podcast.getUrl(), category.getName(), podcast.getName() + ".mp3");
     }

@@ -82,7 +82,7 @@ public class MemoryRepository implements Repository {
        StringBuilder pathBuilder = new StringBuilder();
 
        CategoriesMemoryStoreSinglton categorys = CategoriesMemoryStoreSinglton.getInstance();
-       Category category = categorys.getItemToId(categoryId);
+       Category category = categorys.getItemById(categoryId);
 
        pathBuilder.append(getBaseDirURL());
        pathBuilder.append(category.getName());

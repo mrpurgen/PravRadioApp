@@ -1,5 +1,7 @@
 package eugenzh.ru.pravradioapp.Models.DataStore;
 
+import android.content.Context;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -36,4 +38,10 @@ abstract public class DataStorePodcast extends DataStore<Podcast> implements Han
     public void onFailRequestResultItem(RequestResult code) {
         notifyObserversDataStore(code, this.itemsView);
     }
+
+    @Override
+    protected Podcast createDefaultItem() {
+        return new Podcast(0L, "undefined");
+    }
+
 }

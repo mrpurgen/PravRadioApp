@@ -46,6 +46,8 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView>
 
     private long mCurrentPositionPB;
 
+    private boolean isCategoryUpdate;
+
     public PlayerControlPresenter(Context context){
         mContext = context;
         connectToPlayerService();
@@ -87,17 +89,17 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView>
     private void updatePodcastStoreAndPlay(){
         PreferencesPlaybackManager pref = new PreferencesPlaybackManager(mContext);
         TypeSourceItems typeSource = pref.readTypeSource();
-        Long catgoryId = pref.readCategoryId();
 
         DataStoreFacade dataStore = new DataStoreFacadeImp();
-        DataStorePodcast dataStorePodcast = dataStore.getDataStorePodcast(typeSource);
-        dataStorePodcast.subscripEventUpdateView(this);
 
         DataStoreCategory dataStoreCategory = dataStore.getDataStoreCategory(typeSource);
-        dataStoreCategory.setSelectedItem(catgoryId);
+        dataStoreCategory.unsubscripEventUpdateView(this);
+        dataStoreCategory.subscripEventUpdateView(this);
 
+        ///Не знаю как сделать по другому
+        isCategoryUpdate = true;
+        dataStoreCategory.update();
 
-       // dataStorePodcast.update(catgoryId);
     }
 
     @Override
@@ -107,11 +109,41 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView>
         }
 
         PreferencesPlaybackManager pref = new PreferencesPlaybackManager(mContext);
-
         TypeSourceItems typeSource = pref.readTypeSource();
 
-        if (result == RequestResult.REQUEST_RESUTL_SUCC){
-            Long podcastId = pref.readPodcastId();
+        DataStoreFacade dataStore = new DataStoreFacadeImp();
+
+        if (isCategoryUpdate && result == RequestResult.REQUEST_RESUTL_SUCC){
+            isCategoryUpdate = false;
+
+            Long catgoryId = 0L;
+            DataStoreCategory dataStoreCategory = dataStore.getDataStoreCategory(typeSource);
+
+            if (typeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER) {
+                 catgoryId = pref.readCategoryId();
+            }
+            else if (typeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
+                String categoryName = pref.readCategoryName();
+                catgoryId = dataStoreCategory.getIdByName(categoryName);
+            }
+
+            dataStoreCategory.setSelectedItem(catgoryId);
+
+            DataStorePodcast dataStorePodcast = dataStore.getDataStorePodcast(typeSource);
+            dataStorePodcast.subscripEventUpdateView(this);
+        }
+        else if (result == RequestResult.REQUEST_RESUTL_SUCC){
+            Long podcastId = 0L;
+
+            if (typeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_SERVER) {
+                podcastId = pref.readPodcastId();
+            }
+            else if (typeSource == TypeSourceItems.TYPE_SOURCE_ITEMS_MEMORY){
+                String podcastName = pref.readPodcastName();
+                DataStorePodcast dataStorePodcast = dataStore.getDataStorePodcast(typeSource);
+
+                podcastId = dataStorePodcast.getIdByName(podcastName);
+            }
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("TYPE_SOURCE", typeSource);
@@ -119,8 +151,6 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView>
             mMediaController.getTransportControls().playFromMediaId(String.valueOf(podcastId), bundle);
             mMediaController.getTransportControls().seekTo(mCurrentPositionPB);
         }
-
-
     }
 
    public void onPausePressed(){

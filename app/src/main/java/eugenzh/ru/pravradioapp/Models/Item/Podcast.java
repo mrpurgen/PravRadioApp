@@ -45,4 +45,5 @@ final public class Podcast extends Item{
     public void setDate(Date date) {
         this.date = date;
     }
+
 }

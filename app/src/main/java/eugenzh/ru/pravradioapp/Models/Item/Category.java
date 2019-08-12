@@ -7,6 +7,11 @@ final public class Category extends Item{
         this.setUrl(url);
     }
 
+    public Category(String name, long id) {
+        this.setId(id);
+        this.setName(name);
+    }
+
     public Category(String name) {
         this.setId(0L);
         this.setName(name);

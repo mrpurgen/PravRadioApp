@@ -151,7 +151,7 @@ public class PlaybackQueueMananger {
         if ( (mCurrentTypeSource != mRequestedTypeSource) || (mPlayableCategory.getId() != requestedIDCategory)){
             mPlayList.clear();
             mPlayList.addAll(dataStorePodcast.getItemsSrc());
-            mPlayableCategory = dataStoreCategory.getItemToId(requestedIDCategory);
+            mPlayableCategory = dataStoreCategory.getItemById(requestedIDCategory);
         }
 
         mCurrentTypeSource = mRequestedTypeSource;
