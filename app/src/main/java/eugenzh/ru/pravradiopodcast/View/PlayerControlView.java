@@ -9,7 +9,7 @@ import eugenzh.ru.pravradiopodcast.View.FragmentList.AddToEndSingleByTagStateStr
 
 public interface PlayerControlView extends MvpView {
     String TAG_STATE_CONTROL_PANEL = "TAG_STATE_CONTROL_PANEL";
-    String TAG_SHOW_CONTROL_PANEL = "TAG_SHOW_CONTROL_PANEL";
+    String TAG_SHOW_CONTROL_PANEL = "TAG_SHOW_CONTROL_PANEL" ;
 
     @StateStrategyType(value = AddToEndSingleByTagStateStrategy.class, tag = TAG_STATE_CONTROL_PANEL)
     void playView();
