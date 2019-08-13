@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="eugenzh.ru.pravradioapp">
+    package="eugenzh.ru.pravradiopodcast">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -15,18 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".View.MainActivity">
+        <activity android:name="eugenzh.ru.pravradiopodcast.View.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.ListActivity">
+        <activity android:name="eugenzh.ru.pravradiopodcast.View.ListActivity">
             
         </activity>
-        <service android:name=".Services.DownloadService"/>
-        <service android:name=".Services.PlaybackService"
+        <service android:name="eugenzh.ru.pravradiopodcast.Services.DownloadService"/>
+        <service android:name="eugenzh.ru.pravradiopodcast.Services.PlaybackService"
                  android:exported="false">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService"/>

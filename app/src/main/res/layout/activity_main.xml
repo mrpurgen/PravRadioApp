@@ -35,7 +35,7 @@
             />
     </FrameLayout>
 
-    <eugenzh.ru.pravradioapp.View.PlayerControlCustomView
+    <eugenzh.ru.pravradiopodcast.View.PlayerControlCustomView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/player_ctrl_view"
         android:layout_width="match_parent"
