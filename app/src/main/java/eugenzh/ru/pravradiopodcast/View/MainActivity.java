@@ -47,6 +47,8 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
         viewPager = findViewById(R.id.view_pager);
         toolbar = findViewById(R.id.toolbar);
 
+        viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), MainActivity.this);
         viewPager.setAdapter(viewPagerAdapter);
 

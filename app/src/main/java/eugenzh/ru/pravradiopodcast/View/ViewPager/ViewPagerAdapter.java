@@ -8,13 +8,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import eugenzh.ru.pravradiopodcast.Common.TypeSourceItems;
+import eugenzh.ru.pravradiopodcast.View.FragmentPrimeTime;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    final private int PAGE_COUNT = 2;
+    final private int PAGE_COUNT = 3;
     final static public int PAGE_AUDIOARCHIVE = 0;
     final static public int PAGE_DOWNLOADED = 1;
+    final static public int PAGE_PRIMETIME = 2;
 
-    private String tabTitles[] = new String[] { "Аудиоархив", "Загружено"};
+
+    private String tabTitles[] = new String[] { "Аудиоархив", "Загружено", "Прямой эфир"};
 
     public ViewPagerAdapter(FragmentManager fm, Context ctx){
         super(fm);
@@ -22,7 +25,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        return createFragment(i);
+        if ( (i == PAGE_AUDIOARCHIVE) || (i == PAGE_DOWNLOADED) ) {
+            return createFragmentList(i);
+        }
+        else if (i == PAGE_PRIMETIME){
+            return createFragmentPrimeTime();
+        }
+
+        return null;
     }
 
     @Override
@@ -36,7 +46,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return tabTitles[position];
     }
 
-    private Fragment createFragment(int i) {
+    private Fragment createFragmentList(int i) {
         Bundle bundle = new Bundle();
         Fragment fragment = new FragmentPageHost();
 
@@ -48,5 +58,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         fragment.setArguments(bundle);
 
         return fragment;
+    }
+
+    private Fragment createFragmentPrimeTime(){
+         return new FragmentPrimeTime();
     }
 }
