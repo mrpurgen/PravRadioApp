@@ -194,6 +194,16 @@ public class PlaybackQueueMananger {
         }
     }
 
+    public void cleanInfoPlaybackPref(Context ctx){
+        PreferencesPlaybackManager pref = new PreferencesPlaybackManager(ctx);
+
+        pref.saveTypeSource(TypeSourceItems.TYPE_SOURCE_UNDEFINED);
+        pref.savePlaybackIds(0L, 0L);
+        pref.savePlaybackMainInfo("categoryundefined", "podcastundefined", 0L);
+        pref.savePosition(0L);
+    }
+
+
     public void savePositionToPreferences(Context ctx, long position){
         PreferencesPlaybackManager pref = new PreferencesPlaybackManager(ctx);
 

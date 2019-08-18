@@ -74,8 +74,12 @@ public class PodcastPlayback implements Playback{
     @Override
     public void stop() {
         giveUpAudioFocus();
+
+        if (mPlayer != null){
+            mPlayer.stop();
+        }
+
         unRegisterAudioNoisyReceiver();
-        mPlayer.stop();
         releaseResourse(true);
     }
 
@@ -92,7 +96,8 @@ public class PodcastPlayback implements Playback{
             return PlaybackStateCompat.STATE_NONE;
         }
 
-        switch(mPlayer.getPlaybackState()){
+        int s = mPlayer.getPlaybackState();
+        switch(s){
             case Player.STATE_IDLE:
                 return PlaybackStateCompat.STATE_STOPPED;
 
@@ -349,6 +354,7 @@ public class PodcastPlayback implements Playback{
                     break;
                 case Player.STATE_ENDED:
                     if (mCallback != null){
+                        setInfoCurrentPlaylist(playbackState);
                         mCallback.onCompletion();
                     }
                     break;
@@ -363,6 +369,10 @@ public class PodcastPlayback implements Playback{
             else if (playbackState == Player.STATE_IDLE){
                 mPlayListManager.savePositionToPreferences(mContext, getCurrentStreamPosition());
                 mPlayListManager.cleanInfoPlayback();
+            }
+            else if (playbackState == Player.STATE_ENDED){
+                mPlayListManager.cleanInfoPlayback();
+                mPlayListManager.cleanInfoPlaybackPref(mContext);
             }
         }
 

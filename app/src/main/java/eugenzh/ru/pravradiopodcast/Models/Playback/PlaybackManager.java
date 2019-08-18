@@ -146,18 +146,12 @@ public class PlaybackManager implements Playback.Callback{
             if (mPlaybackQueueMananger.skipQueuePosition(1)){
                 handlePlayRequest();
             }
-            else{
-                handleStopRequest();
-            }
         }
 
         @Override
         public void onSkipToPrevious() {
             if (mPlaybackQueueMananger.skipQueuePosition(-1)){
                 handlePlayRequest();
-            }
-            else{
-                handleStopRequest();
             }
         }
     }

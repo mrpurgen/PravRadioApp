@@ -212,6 +212,7 @@ public class PlayerControlPresenter extends MvpPresenter<PlayerControlView>
             break;
 
             case PlaybackStateCompat.STATE_STOPPED:
+            case PlaybackStateCompat.STATE_NONE:
                 getViewState().hidePanel();
                 break;
             case PlaybackStateCompat.STATE_ERROR:
