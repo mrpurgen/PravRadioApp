@@ -438,6 +438,9 @@ public class PlayerControlCustomView extends FrameLayout implements PlayerContro
   @Override
   public void pauseView() {
     playState = false;
+    enablePrevious = true;
+    enableNext = true;
+    isSeekable = true;
     updateAll();
   }
 

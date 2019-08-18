@@ -6,8 +6,8 @@ android {
         applicationId "eugenzh.ru.pravradiopodcast"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 9
-        versionName "1.0b"
+        versionCode 10
+        versionName "1.01b"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
