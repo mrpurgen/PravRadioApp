@@ -102,10 +102,12 @@ public class ListActivity extends MainBaseActivity<ListViewPresenter> implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.swap){
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.swap){
             presenter.reverseListItems();
         }
-        else if (item.getItemId() != R.id.toolbar_search){
+        else{
             super.onBackPressed();
         }
         return true;

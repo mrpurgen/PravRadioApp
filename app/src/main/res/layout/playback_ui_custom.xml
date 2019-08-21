@@ -36,12 +36,8 @@
 
         <ImageButton
             android:id="@+id/playback_play"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:background="@drawable/selector_background_play_button"
             android:src="@drawable/selector_image_play_button"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"/>
+            style="@style/imagebutton" />
 
         <ImageButton
             android:id="@+id/playback_pause"

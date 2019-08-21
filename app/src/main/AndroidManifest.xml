@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/DefaultTheme"
         android:usesCleartextTraffic="true">
         <activity android:name="eugenzh.ru.pravradiopodcast.View.MainActivity">
             <intent-filter>
@@ -22,9 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="eugenzh.ru.pravradiopodcast.View.ListActivity">
-            
-        </activity>
+
+        <activity android:name="eugenzh.ru.pravradiopodcast.View.ListActivity"></activity>
+
+        <activity android:name=".View.SettingsActivity"></activity>
+
         <service android:name="eugenzh.ru.pravradiopodcast.Services.DownloadService"/>
         <service android:name="eugenzh.ru.pravradiopodcast.Services.PlaybackService"
                  android:exported="false">

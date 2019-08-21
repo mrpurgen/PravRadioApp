@@ -16,5 +16,4 @@
         android:icon="@drawable/ic_swap_vert"
         app:showAsAction="always">
     </item>
-
 </menu>

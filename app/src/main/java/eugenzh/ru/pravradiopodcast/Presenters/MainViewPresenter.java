@@ -26,4 +26,8 @@ public class MainViewPresenter extends MainBasePresenter<MainView> {
         repoMemory.filter(textFilter);
         repoServer.filter(textFilter);
     }
+
+    public void settingsChanged() {
+        getViewState().showSettingsView();
+    }
 }

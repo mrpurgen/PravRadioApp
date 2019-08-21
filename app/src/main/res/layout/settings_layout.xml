@@ -8,18 +8,28 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_list_activity"
+        android:id="@+id/toolbar_settings"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:background="@color/colorRedMaterial"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/list_activity"
-        />
+        android:orientation="horizontal">
 
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/darkThemeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="10dp"
+            android:textSize="24sp"
+            android:fontFamily="@font/roboto_light"
+            android:text="@string/darkThemeText" />
+    </LinearLayout>
 </LinearLayout>

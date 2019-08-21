@@ -1,10 +1,12 @@
 package eugenzh.ru.pravradiopodcast.View;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -40,7 +42,7 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        playerControl = (PlayerControlCustomView)findViewById(R.id.player_ctrl_view);
+        playerControl = findViewById(R.id.player_ctrl_view);
         playerControl.init(getMvpDelegate());
 
         tabLayout = findViewById(R.id.tab_layout);
@@ -55,5 +57,24 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
         setSupportActionBar(toolbar);
 
         createCommonPresenter(presenter);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.toolbar_settings){
+            presenter.settingsChanged();
+        }
+
+        return true;
+    }
+
+    @Override
+    public void showSettingsView()
+    {
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
     }
 }

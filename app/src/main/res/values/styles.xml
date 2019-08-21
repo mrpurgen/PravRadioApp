@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="DefaultTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorRedMaterial</item>
         <item name="colorPrimaryDark">@color/colorRedMaterial</item>
@@ -14,6 +14,25 @@
 
     <style name="CustomNotificationSubtitleStyle" parent="TextAppearance.Compat.Notification.Line2">
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="list_item_category">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor"></item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="imagebutton">
+        <item name="android:layout_width">52dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:background">@drawable/selector_background_play_button</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
     </style>
 
 </resources>
