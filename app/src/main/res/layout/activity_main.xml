@@ -9,17 +9,14 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:background="@color/colorRedMaterial"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        />
+        style="@style/ToolbarStyle" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        app:tabIndicatorColor="?attr/tabIndColor"/>
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,7 +30,7 @@
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"
+            android:background="?attr/backgroundColor"
             />
     </FrameLayout>
 

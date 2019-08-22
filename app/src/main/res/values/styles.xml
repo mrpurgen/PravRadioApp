@@ -6,6 +6,28 @@
         <item name="colorPrimary">@color/colorRedMaterial</item>
         <item name="colorPrimaryDark">@color/colorRedMaterial</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorRedMaterial</item>
+
+        <item name="primaryColorToolbar">@color/colorRedMaterial</item>
+        <item name="tabIndColor">@color/colorRedMaterial</item>
+        <item name="backgroundColor">@color/colorWhite</item>
+        <item name="textColorPrimary">@color/colorBlack</item>
+
+
+    </style>
+
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorBlack</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
+
+        <item name="primaryColorToolbar">@color/colorBlack</item>
+        <item name="tabIndColor">@color/colorGrayMaterial</item>
+        <item name="backgroundColor">@color/colorBlack</item>
+        <item name="textColorPrimary">@color/colorWhite</item>
+
     </style>
 
     <style name="CustomProgressBar" parent="Widget.AppCompat.ProgressBar">
@@ -33,6 +55,13 @@
         <item name="android:background">@drawable/selector_background_play_button</item>
         <item name="android:layout_marginTop">2dp</item>
         <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <style name="ToolbarStyle">
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">?attr/primaryColorToolbar</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
 
 </resources>

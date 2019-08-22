@@ -11,7 +11,7 @@
     </item>
 
     <item
-        android:title="Settings"
+        android:title="@string/settingsTitle"
         android:id="@+id/toolbar_settings"
         app:showAsAction="never">
     </item>

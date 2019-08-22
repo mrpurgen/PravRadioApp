@@ -13,6 +13,7 @@
     <string name="notify_player_desc">notity for player radio</string>
     <string name="popup_podcast_menu_download">Скачать</string>
     <string name="darkThemeText">Темная тема</string>
+    <string name="settingsTitle">Настройки</string>
 
     <string name="msg_error_write_permission">Ошибка получения разрешения на запись</string>
     <string name="msg_error_network">Ошибка доступа к серверу</string>

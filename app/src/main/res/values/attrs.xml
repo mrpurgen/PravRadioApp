@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="primaryColorToolbar" format="reference">      </attr>
+    <attr name="tabIndColor" format="reference">              </attr>
+    <attr name="backgroundColor" format="reference"> </attr>
+    <attr name="textColorPrimary" format="reference"></attr>
+
+
+</resources>

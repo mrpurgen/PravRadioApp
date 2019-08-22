@@ -6,7 +6,7 @@ import android.content.SharedPreferences.Editor;
 
 import eugenzh.ru.pravradiopodcast.Common.TypeSourceItems;
 
-public class PreferencesPlaybackManager {
+public class PreferencesPlaybackManager extends PreferencesManagerBase{
     private static String PREF_FILE_NAME = "PravRadioAppPrefPlayback";
 
     private static String PREF_CATEGORY_NAME = "PREF_CATEGORY_NAME";
@@ -20,10 +20,8 @@ public class PreferencesPlaybackManager {
 
     private static String PREF_POSITION = "PREF_POSITION";
 
-    private SharedPreferences mPreferences;
-
     public PreferencesPlaybackManager(Context ctx) {
-        mPreferences = ctx.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE);
+        super(PREF_FILE_NAME, ctx);
     }
 
     public void saveTypeSource(TypeSourceItems typeSource) {
