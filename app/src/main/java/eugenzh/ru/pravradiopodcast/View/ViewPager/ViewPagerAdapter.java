@@ -14,9 +14,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     final static public int PAGE_AUDIOARCHIVE = 0;
     final static public int PAGE_DOWNLOADED = 1;
 
-    private String tabTitles[] = new String[] { "Аудиоархив", "Загружено"};
+    private String[] tabTitles = new String[]{"Аудиоархив", "Загружено"};
 
     public ViewPagerAdapter(FragmentManager fm, Context ctx){
+
         super(fm);
     }
 

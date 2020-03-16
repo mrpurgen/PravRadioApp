@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".View.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?attr/backgroundColor">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,6 +17,9 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabTextColor="@color/colorGrayMaterial"
+        app:tabSelectedTextColor="?attr/textColorPrimary"
+        app:tabBackground="?attr/tabBackgroundColor"
         app:tabIndicatorColor="?attr/tabIndColor"/>
 
     <FrameLayout

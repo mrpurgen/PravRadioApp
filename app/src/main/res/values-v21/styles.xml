@@ -4,7 +4,6 @@
     <style name="DefaultTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorRedMaterial</item>
-        <item name="colorPrimaryDark">@color/colorRedMaterial</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorRedMaterial</item>
 
@@ -21,7 +20,6 @@
     <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorBlack</item>
-        <item name="colorPrimaryDark">@color/colorBlack</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorWhite</item>
 
@@ -31,6 +29,7 @@
         <item name="backgroundColor">@color/colorBlack</item>
         <item name="textColorPrimary">@color/colorWhite</item>
         <item name="playbackBackColor">@color/colorBlack</item>
+        <item name="android:statusBarColor">@color/colorBlack</item>
 
 
     </style>

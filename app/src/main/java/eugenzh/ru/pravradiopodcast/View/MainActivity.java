@@ -40,6 +40,10 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        createCommonPresenter(presenter);
+        setCurrentTheme();
+
         setContentView(R.layout.activity_main);
 
         playerControl = findViewById(R.id.player_ctrl_view);
@@ -55,10 +59,13 @@ public class MainActivity extends MainBaseActivity<MainViewPresenter> implements
         tabLayout.setupWithViewPager(viewPager);
 
         setSupportActionBar(toolbar);
-
-        createCommonPresenter(presenter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkTheme();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

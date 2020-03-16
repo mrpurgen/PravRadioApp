@@ -36,9 +36,7 @@ public class ListActivity extends MainBaseActivity<ListViewPresenter> implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_activity);
 
-        Fragment fragment;
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("BUNDLE");
 
@@ -48,6 +46,9 @@ public class ListActivity extends MainBaseActivity<ListViewPresenter> implements
         presenter.setTypeSource(typeSourceItems);
         createCommonPresenter(presenter);
 
+        setCurrentTheme();
+        setContentView(R.layout.list_activity);
+
         toolBar = findViewById(R.id.toolbar_list_activity);
         setSupportActionBar(toolBar);
 
@@ -56,7 +57,7 @@ public class ListActivity extends MainBaseActivity<ListViewPresenter> implements
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        fragment = fragmentManager.findFragmentByTag(TAG_FRAGMENT_PODCAST);
+        Fragment fragment = fragmentManager.findFragmentByTag(TAG_FRAGMENT_PODCAST);
 
         if (fragment == null){
             fragment = FragmentList.newInstance(typeItems, typeSourceItems);
@@ -67,6 +68,12 @@ public class ListActivity extends MainBaseActivity<ListViewPresenter> implements
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkTheme();
+    }
 
     public static Intent newInstance(Context ctx, TypeSourceItems typeSource, TypeItems typeItems){
         Bundle bundle = new Bundle();

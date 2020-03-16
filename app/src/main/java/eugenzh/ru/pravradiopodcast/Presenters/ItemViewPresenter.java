@@ -6,7 +6,9 @@ import android.view.View;
 
 import com.arellomobile.mvp.MvpPresenter;
 
+import eugenzh.ru.pravradiopodcast.Common.CustomAppThemes;
 import eugenzh.ru.pravradiopodcast.Common.TypeSourceItems;
+import eugenzh.ru.pravradiopodcast.Models.Settings.SettingsViews;
 import eugenzh.ru.pravradiopodcast.View.FragmentList.ItemView;
 
 
@@ -28,4 +30,10 @@ abstract public class ItemViewPresenter extends MvpPresenter<ItemView>{
     abstract public void onLongClick(View view, int position);
 
     abstract public void handlerResultRequestPermissionWriteStorage(Context context, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
+
+    public CustomAppThemes getCurrentTheme(Context ctx){
+        SettingsViews settings = new SettingsViews(ctx);
+
+        return settings.getCurrentTheme();
+    }
 }

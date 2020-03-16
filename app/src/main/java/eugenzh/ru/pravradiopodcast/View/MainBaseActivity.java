@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
+import eugenzh.ru.pravradiopodcast.Common.CustomAppThemes;
 import eugenzh.ru.pravradiopodcast.Presenters.MainBasePresenter;
 import eugenzh.ru.pravradiopodcast.R;
 
@@ -16,6 +17,7 @@ abstract public class MainBaseActivity<T extends MainBasePresenter> extends MvpA
 
     private SearchView searchView;
     private String textQuery;
+    private CustomAppThemes mCurrentTheme;
 
     protected MainBasePresenter commonPresenter;
 
@@ -37,6 +39,18 @@ abstract public class MainBaseActivity<T extends MainBasePresenter> extends MvpA
 
         if(savedInstanceState != null){
             textQuery = savedInstanceState.getString(TAG_BUNDLE_TEXT_QUERY_SEARCH);
+        }
+    }
+
+    protected void setCurrentTheme(){
+        mCurrentTheme = commonPresenter.getCurrentTheme(getApplicationContext());
+        setTheme(mCurrentTheme.getIdResource());
+    }
+
+    protected void checkTheme(){
+        if (mCurrentTheme != commonPresenter.getCurrentTheme(getApplicationContext())){
+            recreate();
+
         }
     }
 

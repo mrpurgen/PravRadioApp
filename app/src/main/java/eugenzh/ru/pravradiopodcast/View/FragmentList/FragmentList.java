@@ -1,12 +1,14 @@
 package eugenzh.ru.pravradiopodcast.View.FragmentList;
 
 import android.Manifest;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -28,6 +30,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import eugenzh.ru.pravradiopodcast.Common.CustomAppThemes;
 import eugenzh.ru.pravradiopodcast.Common.TypeItems;
 import eugenzh.ru.pravradiopodcast.Common.TypeSourceItems;
 import eugenzh.ru.pravradiopodcast.Models.Item.Category;
@@ -50,6 +53,7 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
     private SearchView searchView;
     private FragmentListAdapter recyclerAdapter;
     private int mPosition = -1;
+    private int mColorItem;
 
     @InjectPresenter
     ItemViewPresenter presenter;
@@ -84,7 +88,13 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        setColorItem();
+        CustomAppThemes themes = presenter.getCurrentTheme(getActivity());
+        final Context contextThemeWrapper;
+        contextThemeWrapper = new ContextThemeWrapper(getActivity(), themes.getIdResource());
+        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+
+        View view = localInflater.inflate(R.layout.fragment_list, container, false);
 
         Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.recyclerview_divider);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
@@ -104,6 +114,17 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
         swipeRefresh.setColorSchemeResources(R.color.colorRedMaterial);
 
         return view;
+    }
+
+    private void setColorItem(){
+        CustomAppThemes themes = presenter.getCurrentTheme(getContext());
+
+        if (themes == CustomAppThemes.DEFAULT_THEME){
+            mColorItem =  R.color.colorBlack;
+        }
+        else {
+            mColorItem = R.color.colorWhite;
+        }
     }
 
     @Override
@@ -313,8 +334,11 @@ public class FragmentList extends MvpAppCompatFragment implements ItemView,
         private void configurePodcastViewHolder(FragmentListPodcastHolder ph, int position){
             Podcast podcast = (Podcast) items.get(position);
 
+
+
+
             if (mPosition != position){
-                ph.podcastTitle.setTextColor(getResources().getColor(R.color.colorBlack));
+                ph.podcastTitle.setTextColor(getResources().getColor(mColorItem));
             }
             else{
                 ph.podcastTitle.setTextColor(getResources().getColor(R.color.colorGrayMaterial));
